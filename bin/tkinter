@@ -1,0 +1,22 @@
+#!/bin/bash
+source $(dirname ${BASH_SOURCE})/../../shf3/lib/header
+import gui
+import sys/py
+
+sys/py/path ${sys_py_libdir}
+
+echo
+msg
+gui/line
+
+### begin python
+${sys_py_python} - <<STOP
+from Tkinter import *
+from gui.tk.entry import *
+
+### main
+root = Tk()
+app = entry.captcha(root)
+root.mainloop()
+STOP
+### end python

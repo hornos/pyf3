@@ -1,0 +1,42 @@
+#!/bin/bash
+source $(dirname ${BASH_SOURCE})/../../shf3/lib/header
+import gui
+import sys/py
+
+### args
+while getopts hv o; do
+  case "$o" in
+    v) gdbg=true;;
+    h|*) help/wxtest;;
+  esac
+done
+_v=""
+if ${gdbg} ; then
+_v="-v"
+fi
+
+### main
+echo
+msg
+gui/line
+
+sys/py/pkg +wx-2.9.3-osx_cocoa
+sys/py/lib
+
+### begin python
+${sys_py_python} ${_v} - <<STOP
+import wx
+import gui.wx.entry as entry
+
+def main():
+  app = wx.App(False)
+  frm = entry.captcha(None)
+  app.MainLoop()
+# end def
+
+if __name__ == '__main__':
+  main()
+# end if
+
+STOP
+### end python
