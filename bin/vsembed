@@ -1,0 +1,47 @@
+#!/bin/bash
+source $(dirname ${BASH_SOURCE})/../../shf3/lib/header
+import gui
+
+embed_vstrans="vstrans"
+embed_vsposcar="vsposcar"
+
+### args
+while getopts hvi:t: o; do
+  case "$o" in
+    i) inp=$OPTARG;;
+    t) trans="${OPTARG}"
+    v) gdbg=true
+       embed_vstrans="${embed_vstrans} -w"
+       embed_vsposcar="${embed_vsposcar} -w"
+       ;;
+    h|*) help/dirzip;;
+  esac
+done
+
+function vsembed/trans() {
+  local _trs="${1}"
+  local _inp="${2}"
+  local _pre="${gbn}.${_t%%.*}"
+  local _out="${_pre}.POSCAR"
+
+  # crop
+  ${embed_vstrans}  -i ${_inp} -o ${_out} -t ${_trs}
+  # xyz
+  ${embed_vsposcar} -i ${_out} -o ${_pre} -x
+}
+
+### main
+gui/header
+
+if ! test -r "${inp}" ; then
+  msg "Not found: ${inp}"
+  exit 1
+fi
+
+for i in ${trans} ; do
+  if ! test -r "${i}" ; then
+    msg "Not found: ${i}"
+    exit 1
+  fi
+  vsembed/trans "${i}" "${inp}"
+done
