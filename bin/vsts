@@ -51,13 +51,12 @@ fi
 
 
 for i in ${trans} ; do
-  pre="${gbn}.${i%%.*}"
-  out="${_pre}.POSCAR"
-
   if ! test -r "${i}" ; then
     msg "Not found: ${i}"
     exit 1
   fi
+  pre="${gbn}.${i%%.*}"
+  out="${pre}.POSCAR"
   vsts/trans "${i}" "${inp}" "${out}"
   if test $? -gt 0 ; then
     exit 1
