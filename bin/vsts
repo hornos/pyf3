@@ -2,10 +2,10 @@
 source $(dirname ${BASH_SOURCE})/../../shf3/lib/header
 import gui
 
-embed_vstrans="vstrans"
-embed_vsposcar="vsposcar"
+vsts_vstrans="vstrans"
+vsts_vsposcar="vsposcar"
 
-function help/vsembed() {
+function help/vsts() {
   cat << EOF
 Usage: ${gbn} options
               -i input
@@ -20,23 +20,21 @@ while getopts hvi:t: o; do
     i) inp=$OPTARG;;
     t) trans="${OPTARG}";;
     v) gdbg=true;
-       embed_vstrans="${embed_vstrans} -w";
-       embed_vsposcar="${embed_vsposcar} -w";
+       vsts_vstrans="${vsts_vstrans} -w";
+       vsts_vsposcar="${vsts_vsposcar} -w";
        ;;
-    h|*) help/vsembed;;
+    h|*) help/vsts;;
   esac
 done
 
-function vsembed/trans() {
+function vsts/trans() {
   local _trs="${1}"
   local _inp="${2}"
-  local _pre="${gbn}.${_trs%%.*}"
-  local _out="${_pre}.POSCAR"
-
+  local _out="${3}"
   # crop
-  ${embed_vstrans}  -i ${_inp} -o ${_out} -t ${_trs}
+  ${vsts_vstrans}  -i ${_inp} -o ${_out} -t ${_trs}
   # xyz
-  ${embed_vsposcar} -i ${_out} -o ${_pre} -x
+  ${vsts_vsposcar} -i ${_out} -o ${_out%%.POSCAR} -x
 }
 
 ### main
@@ -48,12 +46,21 @@ if ! test -r "${inp}" ; then
 fi
 
 if test -z "${trans}" ; then
-  help/vsembed
+  help/vsts
 fi
+
+
 for i in ${trans} ; do
+  pre="${gbn}.${i%%.*}"
+  out="${_pre}.POSCAR"
+
   if ! test -r "${i}" ; then
     msg "Not found: ${i}"
     exit 1
   fi
-  vsembed/trans "${i}" "${inp}"
+  vsts/trans "${i}" "${inp}" "${out}"
+  if test $? -gt 0 ; then
+    exit 1
+  fi
+  inp="${out}"
 done

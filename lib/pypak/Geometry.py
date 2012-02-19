@@ -25,7 +25,7 @@ class Geometry:
 
   def clone( self, atoms = False ):
     geom = Geometry( self.name )
-    geom.name = 'Clone of ' + geom.name
+    geom.name = "Clone of " + geom.name
     geom.lat_vec = copy.deepcopy( self.lat_vec )
     geom.rec_vec = copy.deepcopy( self.rec_vec )
     geom.lat_c   = copy.deepcopy( self.lat_c )
@@ -393,8 +393,10 @@ class Geometry:
       raise Warning( "Symbol mismatch" )
     # end if
     origo = atom.position
-    print "TF/rotate origo"
+    print " TF/rotate origo"
     atom.info()
+    print " TF/rotate",u,t
+
     R = ROT(u,t)
 
     # copy atoms
