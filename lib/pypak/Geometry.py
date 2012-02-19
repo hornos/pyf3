@@ -345,7 +345,7 @@ class Geometry:
       # end if
     # end for
     print " TF/crop", c
-    crop.normailize()
+    crop.normalize()
     return crop
   # end def
 
