@@ -1,0 +1,4 @@
+### global
+pyf3_root=$(cd $(dirname "${BASH_SOURCE}");cd ..;pwd -P)
+
+PATH=${PATH}:${pyf3_root}/bin

@@ -46,7 +46,7 @@ class LX( Lexer ):
     key = arr[0].strip()
     val = arr[1].strip()
     if key == "total drift":
-      td = L2N( S2F( val ) )
+      td = l2norm( string2float( val ) )
       if td > 0.1:
         print "HIGH Total Drift: " + str( td )
    # end if
@@ -79,8 +79,8 @@ class LX( Lexer ):
 
   def t_TF_POSVEC( self, t ):
     r'([0-9.-]+\ +)+[0-9.-]+'
-    posvec = S2F( t.value )
-    tf = L2N( posvec[3:] )
+    posvec = string2float( t.value )
+    tf = l2norm( posvec[3:] )
     if tf > 0.1:
       print "%4d." % self.c + " HIGH Force: " + str( tf )
     self.c += 1

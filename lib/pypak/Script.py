@@ -3,28 +3,29 @@
 #
 
 import os
+import sys
 import string
-import ConfigParser
-from optparse import OptionParser
 import numpy
-from pypak.Types import *
+from ConfigParser import ConfigParser
+from optparse     import OptionParser
+from pypak.Types  import *
 
 class Script( Debug ):
   def __init__( self, gbn = os.path.basename( sys.argv[0] ), 
-                      gcn = os.path.basename( sys.argv[0] ) + ".ini" ):
+                      cfg = os.path.basename( sys.argv[0] ) + ".ini" ):
     Debug.__init__( self )
     self.gbn = gbn
     self.opt = OptionParser()
-    self.gcn = gcn
-    self.par = ConfigParser.ConfigParser()
+    self.cfg = ConfigParser()
+    try:
+      self.cfg.read( cfg )
+    except:
+      print "Configuration not found:", cfg
+      sys.exit(1)
   # end def
 
   def option( self, *args, **kwargs ):
     self.opt.add_option( *args, **kwargs )
-  # end def
-
-  def parse( self ):
-    return self.par.parse_args()
   # end def
 
   def init( self ):
@@ -38,76 +39,45 @@ class Script( Debug ):
               default = False, help = "Debug Mode" )
 
 
-    (_opt, _arg) = self.parse()
-    self.verbose = _opt.verbose
-    self.debug   = _opt.debug
-    self.gcn     = _opt.gcn
+    (opts,args) = self.opt.parse_args()
+    self.verbose = opts.verbose
+    self.debug   = opts.debug
+  # end def
 
-    ## Global Config
-    try:
-      self.gpcpar.readfp( open( self.gpc ) )
-      if self.verbose :
-        print ' Global: ' + self.gpc
-    except:
-      if self.verbose :
-        print ' Missing: ' + self.gpc
-    # end try
+  def parse( self ):
+    return self.opt.parse_args()
+  # end def
 
-    ## Read User Config
-    try:
-      self.upcpar.readfp( open( self.upc ) )
-      if self.verbose :
-        print ' User: ' + self.upc
-    except:
-      if self.verbose :
-        print ' Missing: ' + self.upc
-    # end try
+  def cfgint( self, opt = None ):
+    return self.cfg.getint( self.gbn, opt )
   # end def
 
 
-  def cfg( self, item = None ):
-    try:
-      return self.upcpar.get( self.scn, item )
-    except:
-      try:
-        return self.gpcpar.get( self.scn, item )
-      except:
-        raise
-      # end try
-    # end try
+  def cfgfloat( self, opt = None ):
+    return self.cfg.getfloat( self.gbn, opt )
   # end def
 
 
-  def cfgi( self, item = None ):
-    return string.atoi( self.cfg( item ) )
-  # end def
-
-
-  def cfgf( self, item = None ):
-    return string.atof( self.cfg( item ) )
-  # end def
-
-
-  def cfgarr( self, item = None ):
-    line = self.cfg( item )
+  def cfgarray( self, opt = None ):
+    line = self.cfg.get( self.gbn, opt )
     return line.split();
   # end def
 
 
-  def cfgarri( self, item = None ):
-    arr = self.cfgarr( item )
-    for i in range( 0, len( arr ) ):
-      arr[i] = string.atoi( arr[i] )
+  def cfgiarray( self, opt = None ):
+    array = self.cfgarray( opt )
+    for i in range( 0, len( array ) ):
+      array[i] = string.atoi( array[i] )
     # end for
-    return numpy.array( arr )
+    return numpy.array( array )
   # end def
 
 
-  def cfgarrf( self, item = None ):
-    arr = self.cfgarr( item )
-    for i in range( 0, len( arr ) ):
-      arr[i] = string.atof( arr[i] )
+  def cfgfarray( self, opt = None ):
+    array = self.cfgarray( opt )
+    for i in range( 0, len( array ) ):
+      array[i] = string.atof( array[i] )
     # end for
-    return numpy.array( arr )
+    return numpy.array( array )
   # end def
 # end class

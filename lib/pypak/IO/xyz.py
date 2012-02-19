@@ -29,7 +29,7 @@ class IO( File ):
     self.clean()
     # dump header
     self.putline( self.geom.natoms() )
-    self.putline( self.geom.name )
+    self.putline( " "+self.geom.name )
     try:
       pt = opts['pt']
     except:
@@ -40,7 +40,7 @@ class IO( File ):
     for atom in self.geom.atoms:
       s = atom.symbol
       mov = atom.moveable
-      line[0] = "  %2s" % s
+      line[0] = " %-2s" % s
 
       # convert
       pos = atom.position
@@ -56,7 +56,7 @@ class IO( File ):
       # end if
 
       for i in range( 0, 3 ):
-        line[0] += "  %20.16f" % pos[i]
+        line[0] += "%16.6f" % pos[i]
       # end for
       self.putline( line[0] )
     # end for
