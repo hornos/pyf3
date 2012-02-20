@@ -90,7 +90,6 @@ for i in ${trans} ; do
   pre="${gbn}.${i%%.*}"
   out="${pre}.POSCAR"
 
-  echo ""
   answer "Execute transformation: ${i}?"
   if test $? -gt 0 ; then
     exit 1
