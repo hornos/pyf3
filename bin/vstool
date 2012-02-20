@@ -2,9 +2,9 @@
 source $(dirname ${BASH_SOURCE})/../../shf3/lib/header
 import gui
 
-vsts_vstrans="vstrans"
-vsts_vsposcar="vsposcar"
-vsts_vmdsrv="vmdsrv"
+vstool_vstrans="vstrans"
+vstool_vsposcar="vsposcar"
+vstool_vmdsrv="vmdsrv"
 
 function help/vstool() {
   cat << EOF
@@ -69,7 +69,7 @@ if ! test -r "${inp}" ; then
 fi
 
 if test -z "${trans}" ; then
-  help/vsts
+  help/vstool
 fi
 
 answer "Show input?"
@@ -91,7 +91,7 @@ for i in ${trans} ; do
     exit 1
   fi
 
-  vsts/trans "${i}" "${inp}" "${out}"
+  vstool/trans "${i}" "${inp}" "${out}"
   if test $? -gt 0 ; then
     exit 1
   fi
