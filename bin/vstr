@@ -1,0 +1,16 @@
+#!/bin/bash
+source $(dirname ${BASH_SOURCE})/../../shf3/lib/header
+import gui
+
+if test $# -lt 2 ; then
+  cat << EOF
+Usage: ${gbn} input trans1.tf trans2.tf ...
+EOF
+  exit 1
+fi
+
+_i="${1}"
+shift
+_t="${*}"
+
+vstool -i "${_i}" -t "${_t}"
