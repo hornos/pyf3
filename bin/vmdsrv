@@ -42,6 +42,9 @@ case "${action}" in
     sys/srv/${action} ${_p};;
   stop)
     vmdsrv/stop;;
+  cmd)
+    shift
+    sys/srv/cmd $*;;
   *)
     msg "Invalid action";
     exit 1;;
