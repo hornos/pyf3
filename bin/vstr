@@ -13,4 +13,4 @@ _i="${1}"
 shift
 _t="${*}"
 
-vstool -i "${_i}" -t "${_t}"
+vstool -r -i "${_i}" -t "${_t}"

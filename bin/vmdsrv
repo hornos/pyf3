@@ -45,6 +45,8 @@ case "${action}" in
   cmd)
     shift
     sys/srv/cmd $*;;
+  reset)
+    sys/srv/cmd mol delete all;;
   *)
     msg "Invalid action";
     exit 1;;

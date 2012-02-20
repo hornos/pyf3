@@ -45,12 +45,13 @@ function vstool/load() {
 ### args
 inp="POSCAR"
 trans="trans.tf"
-
-while getopts hvi:t:c: o; do
+_r=false
+while getopts hvri:t:c: o; do
   case "$o" in
     i) inp=$OPTARG;;
     t) trans="${OPTARG}";;
     c) vstool_vmdsrv="${OPTARG}";;
+    r) _r=true;;
     v) gdbg=true;
        vstool_vstrans="${vstool_vstrans} -w";
        vstool_vsposcar="${vstool_vsposcar} -w";
@@ -70,6 +71,10 @@ fi
 
 if test -z "${trans}" ; then
   help/vstool
+fi
+
+if ${_r} ; then
+  ${vstool_vmdsrv} reset
 fi
 
 answer "Show input?"
