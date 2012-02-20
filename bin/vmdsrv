@@ -1,0 +1,36 @@
+#!/bin/bash
+source $(dirname ${BASH_SOURCE})/../../shf3/lib/header
+import gui
+import sys/srv
+
+vmdsrv_timeout=2
+
+function help/vmdsrv() {
+  cat << EOF
+VMD Server
+
+Usage: ${gbn} options
+EOF
+exit 1
+}
+
+function vmdsrv/stop() {
+  gui/header $(ns/func "${FUNCNAME}")
+  sys/srv/cmd "exit"
+  sleep ${vmdsrv_timeout}
+  sys/srv/stop true
+}
+
+### args
+action="${1:-start}"
+
+### main
+case "${action}" in
+  start|restart)
+    sys/srv/${action} "vmd -nt -pos 500 0";;
+  stop)
+    vmdsrv/stop;;
+  *)
+    msg "Invalid action";
+    exit 1;;
+esac

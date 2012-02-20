@@ -10,22 +10,10 @@ function help/vsts() {
 Usage: ${gbn} options
               -i input
               -t "trans1.tf trans2.tf ..."
+              -c vmd control
 EOF
 exit 1
 }
-
-### args
-while getopts hvi:t: o; do
-  case "$o" in
-    i) inp=$OPTARG;;
-    t) trans="${OPTARG}";;
-    v) gdbg=true;
-       vsts_vstrans="${vsts_vstrans} -w";
-       vsts_vsposcar="${vsts_vsposcar} -w";
-       ;;
-    h|*) help/vsts;;
-  esac
-done
 
 function vsts/trans() {
   local _trs="${1}"
@@ -36,6 +24,42 @@ function vsts/trans() {
   # xyz
   ${vsts_vsposcar} -i ${_out} -o ${_out%%.POSCAR} -x
 }
+
+function vsts/show() {
+  local _f="${1}"
+  if test -r "${_f}" ; then
+    msg "Not found: ${_f}"
+    return ${_false_}
+  fi
+  local _t=$(basename "${_f}")
+  _t="${_t##*.}"
+
+  if ! test -z "${cntl}" ; then
+    if ! test -r "${cntl}" ; then
+      msg "VMD control not found"
+      return ${_false_}
+    fi
+    echo "mol load ${_t} ${_f}" > "${cntl}"
+  fi
+}
+
+### args
+inp=""
+trans=""
+cntl=""
+while getopts hvi:t:c: o; do
+  case "$o" in
+    i) inp=$OPTARG;;
+    t) trans="${OPTARG}";;
+    c) cntl="${OPTARG}";;
+    v) gdbg=true;
+       vsts_vstrans="${vsts_vstrans} -w";
+       vsts_vsposcar="${vsts_vsposcar} -w";
+       ;;
+    h|*) help/vsts;;
+  esac
+done
+
 
 ### main
 gui/header
@@ -49,7 +73,6 @@ if test -z "${trans}" ; then
   help/vsts
 fi
 
-
 for i in ${trans} ; do
   if ! test -r "${i}" ; then
     msg "Not found: ${i}"
@@ -58,6 +81,11 @@ for i in ${trans} ; do
   pre="${gbn}.${i%%.*}"
   out="${pre}.POSCAR"
   vsts/trans "${i}" "${inp}" "${out}"
+  if test $? -gt 0 ; then
+    exit 1
+  fi
+  vsts/show "${out}"
+  answer "Continue?"
   if test $? -gt 0 ; then
     exit 1
   fi
