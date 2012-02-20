@@ -4,7 +4,7 @@ import gui
 
 vsts_vstrans="vstrans"
 vsts_vsposcar="vsposcar"
-vsts_vmdsrv="vmdsrv/stdin"
+vsts_vmdsrv="vmdsrv"
 
 function help/vstool() {
   cat << EOF
@@ -26,7 +26,7 @@ function vstool/trans() {
   ${vstool_vsposcar} -i ${_out} -o ${_out%%.POSCAR} -x
 }
 
-function vtool/load() {
+function vstool/load() {
   local _f="${1}"
   if ! test -r "${_f}" ; then
     msg "Not found: ${_f}"
@@ -39,13 +39,7 @@ function vtool/load() {
       _t="POSCAR";;
   esac
 
-  if ! test -z "${vstool_vmdsrv}" ; then
-    if ! test -r "${vstool_vmdsrv}" ; then
-      msg "VMD control not found"
-      return ${_false_}
-    fi
-    echo "mol load ${_t} ${_f}" > "${vstool_vmdsrv}"
-  fi
+  ${vstool_vmdsrv} cmd mol load "${_t}" "${_f}"
 }
 
 ### args
@@ -80,7 +74,7 @@ fi
 
 answer "Show input?"
 if test $? -eq 0 ; then
-  vsts/load "${inp}"
+  vstool/load "${inp}"
 fi
 
 for i in ${trans} ; do
@@ -101,6 +95,6 @@ for i in ${trans} ; do
   if test $? -gt 0 ; then
     exit 1
   fi
-  vsts/load "${out}"
+  vstool/load "${out}"
   inp="${out}"
 done
