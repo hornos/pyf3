@@ -4,6 +4,7 @@ import gui
 
 vsts_vstrans="vstrans"
 vsts_vsposcar="vsposcar"
+vsts_vmdsrv="vmdsrv/stdin"
 
 function help/vsts() {
   cat << EOF
@@ -25,33 +26,37 @@ function vsts/trans() {
   ${vsts_vsposcar} -i ${_out} -o ${_out%%.POSCAR} -x
 }
 
-function vsts/show() {
+function vsts/load() {
   local _f="${1}"
-  if test -r "${_f}" ; then
+  if ! test -r "${_f}" ; then
     msg "Not found: ${_f}"
     return ${_false_}
   fi
   local _t=$(basename "${_f}")
   _t="${_t##*.}"
+  case "${_t}" in
+    CONTCAR|geom)
+      _t="POSCAR";;
+  esac
 
-  if ! test -z "${cntl}" ; then
-    if ! test -r "${cntl}" ; then
+  if ! test -z "${vsts_vmdsrv}" ; then
+    if ! test -r "${vsts_vmdsrv}" ; then
       msg "VMD control not found"
       return ${_false_}
     fi
-    echo "mol load ${_t} ${_f}" > "${cntl}"
+    echo "mol load ${_t} ${_f}" > "${vsts_vmdsrv}"
   fi
 }
 
 ### args
-inp=""
-trans=""
-cntl=""
+inp="POSCAR"
+trans="trans.tf"
+
 while getopts hvi:t:c: o; do
   case "$o" in
     i) inp=$OPTARG;;
     t) trans="${OPTARG}";;
-    c) cntl="${OPTARG}";;
+    c) vsts_vmdsrv="${OPTARG}";;
     v) gdbg=true;
        vsts_vstrans="${vsts_vstrans} -w";
        vsts_vsposcar="${vsts_vsposcar} -w";
@@ -73,6 +78,11 @@ if test -z "${trans}" ; then
   help/vsts
 fi
 
+answer "Show input?"
+if test $? -eq 0 ; then
+  vsts/load "${inp}"
+fi
+
 for i in ${trans} ; do
   if ! test -r "${i}" ; then
     msg "Not found: ${i}"
@@ -80,14 +90,17 @@ for i in ${trans} ; do
   fi
   pre="${gbn}.${i%%.*}"
   out="${pre}.POSCAR"
+
+  echo ""
+  answer "Execute transformation: ${i}?"
+  if test $? -gt 0 ; then
+    exit 1
+  fi
+
   vsts/trans "${i}" "${inp}" "${out}"
   if test $? -gt 0 ; then
     exit 1
   fi
-  vsts/show "${out}"
-  answer "Continue?"
-  if test $? -gt 0 ; then
-    exit 1
-  fi
+  vsts/load "${out}"
   inp="${out}"
 done

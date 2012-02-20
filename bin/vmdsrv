@@ -26,8 +26,20 @@ action="${1:-start}"
 
 ### main
 case "${action}" in
-  start|restart)
-    sys/srv/${action} "vmd -nt -pos 500 0";;
+  start)
+    shift
+    if ! test -z "${*}" ; then
+      _p="$*"
+    else
+      _p="vmd -nt -pos 500 0"
+      _rc="${gbn}rc"
+      if test -r "${_rc}" ; then
+        _p="${_p} -startup ${_rc}"
+      else
+        _p="${_p} -startup ${gdn}/${_rc}"
+      fi
+    fi
+    sys/srv/${action} ${_p};;
   stop)
     vmdsrv/stop;;
   *)
