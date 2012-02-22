@@ -122,20 +122,6 @@ class Geometry:
   # end def
 
 
-  def nearest( self, pos = None ):
-    nearest_atom = None
-    nearest_dpos = 100000.000
-    for atom in self.atoms:
-      dpos_vec = abs( numpy.subtract( atom.position, pos ) )
-      dpos_max = dpos_vec[ numpy.argmax( dpos_vec ) ]
-      if dpos_max < nearest_dpos :
-        nearest_atom = atom
-        nearest_dpos = dpos_max
-    # end for
-    return nearest_atom
-  # end def
-
-
   def position_direct( self, r = numpy.zeros( 3 ) ):
     self.reciprocal()
     return numpy.dot( 1.0 / self.lat_c, numpy.dot( r, self.rec_vec ) )
@@ -243,6 +229,81 @@ class Geometry:
       # end for
     # end for
     print len(cmb[0])*len(cmb[1])*len(cmb[2])
+  # end def
+
+  def nearest( self, pos = None ):
+    na = None
+    r  = 100000.000
+    dr = r
+    for a in self.atoms:
+      apos = a.position
+      dr = l2norm ( a.position - pos )
+      if dr < r :
+        na = a
+        r  = dr
+    # end for
+    return na
+  # end def
+
+  #                where           what
+  # self = host
+  def embed( self, host_origo = 0, embed_geom = None, embed_origo = 0 ):
+    # absolute coords
+    self.cart()
+    embed_geom.cart()
+
+    # check
+    ho = self.atoms[host_origo]
+    eo = embed_geom.atoms[embed_origo]
+
+    print ' Host origo:'
+    ho.info()
+    print ' Embed origo:'
+    eo.info()  
+    if eo.symbol != ho.symbol:
+      print ' Warning: origo mismatch', ho.symbol, eo.symbol
+    # end if
+
+    # TODO
+    reo = eo.position
+    rho = ho.position
+    drh = rho - reo
+
+    print ' Origo shift:', drh
+    print ' Origo distance:',l2norm(drh)
+
+    # embed -> host
+    frm1="%5d %2s   -> %5d %2s %9.6f"
+    nearest = {}
+    # loop on embed geometry
+    print "   Embed   ->     Host  dr"
+    for ea in embed_geom.atoms:
+      # shift relative to host origo
+      eapos = ea.position
+      rh = eapos + drh
+      # find the nearest atom to rh vector in host
+      ha = self.nearest(rh)
+      hapos = ha.position
+      dr = l2norm(hapos - rh)
+      print frm1 %(ea.no,ea.symbol,ha.no,ha.symbol,dr)
+      if ea.symbol != ha.symbol:
+        print ' Warning: nearest mismatch', ea.symbol, ha.symbol
+      # end if
+      try:
+        nearest[ea.no]
+        print ' Warning: found', ea.no
+        ea.info()
+      except:
+        nearest[ea.no] = ha.no
+      # end try
+    # end for
+
+    # do the embedding
+    for eai,hai in nearest.iteritems():
+      ea = embed_geom.atoms[eai]
+      rea = ea.position + drh
+      self.atoms[hai].position = rea
+      self.atoms[hai].symbol = ea.symbol
   # end def
 
   # very simple diff

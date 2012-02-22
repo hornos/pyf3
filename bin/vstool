@@ -102,3 +102,5 @@ for i in ${trans} ; do
   vstool/load "${out}"
   inp="${out}"
 done
+
+ln -f -s "${out}" "${gbn}.POSCAR"
