@@ -45,6 +45,27 @@ case "${action}" in
   cmd)
     shift
     sys/srv/cmd $*;;
+  load)
+    shift
+    for i in $* ; do
+      _f="${i}"
+      if ! test -r "${_f}" ; then
+        msg "Not found: ${_f}"
+        continue
+      fi
+      _t=$(basename "${_f}")
+      _t="${_t##*.}"
+
+    done
+
+  case "${_t}" in
+    CONTCAR|geom)
+      _t="POSCAR";;
+  esac
+
+  ${vstool_vmdsrv} cmd mol load "${_t}" "${_f}"
+
+    ;;
   reset)
     sys/srv/cmd mol delete all;;
   *)
