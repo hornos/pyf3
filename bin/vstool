@@ -87,7 +87,8 @@ for i in ${trans} ; do
     msg "Not found: ${i}"
     exit 1
   fi
-  pre="${gbn}.${i%%.*}"
+  local j=$(basename "${i}")
+  pre="${gbn}.${j%%.*}"
   out="${pre}.POSCAR"
 
   answer "Execute transformation: ${i}?"
@@ -103,4 +104,4 @@ for i in ${trans} ; do
   inp="${out}"
 done
 
-ln -f -s "${out}" "${gbn}.POSCAR"
+cp -f "${out}" "${gbn}.POSCAR"
