@@ -273,11 +273,12 @@ class Geometry:
     print ' Origo distance:',l2norm(drh)
 
     # embed -> host
-    frm1="%5d %2s   -> %5d %2s %9.6f"
+    frm1="%5d %2s   -> %5d %2s %9.6f %s"
     nearest = {}
     # loop on embed geometry
     print "   Embed   ->     Host  dr"
     for ea in embed_geom.atoms:
+      warn = ""
       # shift relative to host origo
       eapos = ea.position
       rh = eapos + drh
@@ -285,7 +286,10 @@ class Geometry:
       ha = self.nearest(rh)
       hapos = ha.position
       dr = l2norm(hapos - rh)
-      print frm1 %(ea.no,ea.symbol,ha.no,ha.symbol,dr)
+      if dr > 1.000:
+        warn = "high dr"
+      # end if
+      print frm1 %(ea.no,ea.symbol,ha.no,ha.symbol,dr,warn)
       if ea.symbol != ha.symbol:
         print ' Warning: nearest mismatch', ea.symbol, ha.symbol
       # end if
