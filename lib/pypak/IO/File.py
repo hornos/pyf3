@@ -5,6 +5,8 @@
 import os
 import sys
 import string
+import magic
+import gzip
 
 from pypak.Types import *
 
@@ -33,7 +35,13 @@ class File( Debug ):
     if self.verbose or self.debug:
       print " Open:", self.path, self.opts
 
-    self.fp = open( self.path, self.opts )
+    m = magic.Magic(mime=True)
+    mime = m.from_file(self.path)
+    if mime == "application/x-gzip":
+      self.fp = open( self.path, "rb" )
+    else:
+      self.fp = open( self.path, self.opts )
+    # end if
   # end def
 
   def close( self ):
