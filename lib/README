@@ -7,3 +7,10 @@ cd ply-3.4
 python setup.py build
 cd ..
 ln -s ply-3.4/build/lib/ply ply
+
+== python-magic ==
+git clone git://github.com/ahupp/python-magic.git
+cd python-magic
+python setup.py build
+cd ..
+cp python-magic/build/lib/magic.py .
