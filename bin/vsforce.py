@@ -4,10 +4,6 @@ import os
 import sys
 import string
 
-### BEGIN HEADER
-sys.path.append( os.path.dirname( sys.argv[0] ) + "/../lib" )
-### END HEADER
-
 ### BEGIN PROGRAM CLASS
 from pypak.Script        import Script
 from pypak.LX.LX         import LX
