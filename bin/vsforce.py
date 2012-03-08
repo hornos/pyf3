@@ -17,23 +17,30 @@ class Program( Script ):
 
     self.opt( "-i", "--input",
               action = "store", type = "string",
-              dest = "input_name", default = "OUTCAR",
+              dest = "input", default = "OUTCAR",
               help = "Input" )
 
-    self.ini()
+    self.init()
   # end def __init__
 
 
   ### MAIN BEGIN ###
   def main( self ):
-    (options, args) = self.par()
-    input_name  = options.input_name
+    (opts, args) = self.parse()
 
     sysopts = { "verbose" : self.verbose, "debug" : self.debug }
+    try:
+      inp = LX( opts.input, 'OUTCAR', sysopts )
+      inp.build()
+      inp.process()
+    except:
+      if self.debug:
+        raise
+      else:
+        print "Input failed:", opts.input
+        sys.exit(1)
+    # end try
 
-    input_file  = LX( input_name,'OUTCAR', sysopts )
-    input_file.build()
-    input_file.process()
   # end def
 # end class
 
