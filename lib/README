@@ -1,0 +1,9 @@
+=== External libraries ===
+
+== PLY ==
+wget http://www.dabeaz.com/ply/ply-3.4.tar.gz
+tar xvzf ply-3.4.tar.gz
+cd ply-3.4
+python setup.py build
+cd ..
+ln -s ply-3.4/build/lib/ply ply
