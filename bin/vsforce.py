@@ -15,7 +15,7 @@ class Program( Script ):
   def __init__( self ):
     Script.__init__( self )
 
-    self.opt( "-i", "--input",
+    self.option( "-i", "--input",
               action = "store", type = "string",
               dest = "input", default = "OUTCAR",
               help = "Input" )
