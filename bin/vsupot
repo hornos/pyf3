@@ -1,0 +1,14 @@
+#!/bin/bash
+source $(dirname ${BASH_SOURCE})/../../shf3/lib/header
+import gui
+import sys/py
+
+### main
+echo
+msg
+gui/line
+
+# default lib path
+sys/py/lib
+# run python
+sys/py/run $*

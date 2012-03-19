@@ -15,6 +15,8 @@ class Geometry:
   def __init__( self, name = "" ):
     self.name    = name
     self.species = {}
+    self.geom_match = {}
+    self.geom    = None
     self.atoms   = []
     self.ac      = 0
     self.pt      = PT.Direct
@@ -374,6 +376,83 @@ class Geometry:
     self.direct()
   # end def
 
+  def match(self, eps = 0.010000, lim = 0.900000000 ):
+    self.geom_match = {}
+    one = 1.0000000000000000
+    if self.geom == None:
+      raise Exception("Match geometry not found")
+
+    for atom in self.atoms:
+      ano  = atom.no
+      asym = atom.symbol
+      apos = atom.position
+      spos = numpy.zeros( [8, 3] )
+      lfound = False
+
+      # loop over reference
+      for aref in self.geom.atoms:
+        rno  = aref.no
+        rsym = aref.symbol
+        rpos = aref.position
+
+        # shift match
+        # spos [8,3]
+        # i 0 1 2 3 4 5 6 7
+        # x 0 *     * *   *
+        # y 0   *   *   * *
+        # z 0     *   * * *
+
+        # begin fill
+        for i in range(0,8):
+          for j in range(0,3):
+            spos[i][j] = apos[j]
+          # end for
+        # end for
+
+        # 1-3
+        for j in range(1,4):
+          spos[j][j-1] -= one
+        # end for
+        # 4
+        spos[4][0] -= one
+        spos[4][1] -= one
+        spos[5][0] -= one
+        spos[5][2] -= one
+        spos[6][1] -= one
+        spos[6][2] -= one
+        for j in range(0,3):
+          spos[7][j] -= one
+        # end fill
+
+        # check with shifted
+        for i in range(0,8):
+          if l2norm(rpos-spos[i]) < 0.100000:
+            # found direct match
+            try:
+              self.geom_match[ano]
+            except:
+              self.geom_match[ano] = rno
+              # print "Shifted from :",ano,asym,apos
+              # print "Shifted to   :",rno,rsym,rpos
+              if asym != rsym:
+                print "Warning: Symbol mismatch:",ano,asym,rno,rsym
+              lfound = True
+              break
+            else:
+              print "Error: Match already found:", ano
+            # end if
+          # end if
+        # end for shifted
+
+      # end for aref
+
+      if not lfound:
+        print "No match: %4d %2s %12.9f %12.9f %12.9f" % (ano,asym,apos[0],apos[1],apos[2])
+
+    # end for atom
+    # print self.geom_match
+  # end def
+
   ### Transformations
 
   def TF_crop( self, c = [] ):
@@ -474,4 +553,5 @@ class Geometry:
 
     return self
   # end def
+
 # end class Geometry
