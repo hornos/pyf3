@@ -7,6 +7,7 @@ import string
 import math
 import copy
 import numpy
+
 from pypak.Math import *
 from pypak.Types import *
 
@@ -376,6 +377,38 @@ class Geometry:
     self.direct()
   # end def
 
+  def rmax(self, origo = 0, rmax = 0.400):
+    half  = 0.50000000000000000
+    one   = 1.00000000000000000
+    origo = self.get(origo)
+    opos  = origo.position
+    ono   = origo.no
+    osym  = origo.symbol
+    norma = numpy.zeros( 3 )
+    for i in range(0,3):
+      if opos[i] < half:
+        norma[i] = -one
+      else:
+        norma[i] = one
+    # end for
+
+    print "ORIGO %4d %2s %12.9f %12.9f %12.9f" % (ono,osym,opos[0],opos[1],opos[2])
+    for atom in self.atoms:
+      apos = atom.position
+      asym = atom.symbol
+      ano  = atom.no
+      # normalize
+      for i in range(0,3):
+        if abs(apos[i] - opos[i]) > half:
+          apos[i] += norma[i]
+      # end for
+      # print apos
+      dr = l2norm(apos - opos)
+      if dr > rmax:
+        print "RMAX  %4d %2s %12.9f %12.9f %12.9f %12.9f" % (ano,asym,apos[0],apos[1],apos[2],dr)
+    # end for
+  # end def
+
   def match(self, eps = 0.010000, lim = 0.900000000 ):
     self.geom_match = {}
     one = 1.0000000000000000
@@ -452,6 +485,8 @@ class Geometry:
     # end for atom
     # print self.geom_match
   # end def
+
+  ### Parallel
 
   ### Transformations
 

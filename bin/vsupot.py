@@ -22,6 +22,16 @@ class Program( Script ):
               dest = "reference", default = "reference.UPOT",
               help = "Reference" )
 
+    self.option( "-a", "--average",
+              action = "store", type = "string",
+              dest = "average",
+              help = "Average" )
+
+    self.option( "-m", "--max",
+              action = "store", type = "string",
+              dest = "max",
+              help = "Rmax" )
+
     self.init()
   # end def __init__
 
@@ -57,12 +67,24 @@ class Program( Script ):
 
     # read atomlist
 
-    # warning: geoms should have the same lattice
-    # match
     gref = ref.geom()
     gref.geom = inp.geom()
-    gref.match()
 
+    # check furthest
+    if not opts.max == None:
+      (origo,max) = opts.max.split(":")
+      origo = int(origo)
+      max = float(max)
+      gref.rmax(origo,max)
+      return
+    # end if
+
+    # warning: geoms should have the same lattice
+    # generate match table
+    if not opts.average == None:
+      gref.match()
+      print
+      ref.average( opts.average.split(":") )
   # end def main
 # end class
 

@@ -47,6 +47,10 @@ class IO( Debug ):
     return self.handler.geom
   # end def
 
+  def average( self, argv = None ):
+    return self.handler.average(argv)
+  # end def
+
   def command( self, cmd = None, argv = None ):
     cmdfn = getattr( self.handler, cmd )
     return cmdfn( argv )
