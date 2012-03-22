@@ -1,3 +1,4 @@
+# TODO: makefile
 === External libraries ===
 
 == PLY ==
@@ -14,3 +15,11 @@ cd python-magic
 python setup.py build
 cd ..
 cp python-magic/build/lib/magic.py .
+
+== Numpy ==
+git clone git://github.com/numpy/numpy.git
+mv numpy numpy.git
+cd numpy.git
+python setup.py build
+cd ..
+ln -s numpy.git/build/lib.linux-x86_64-2.4/numpy numpy
