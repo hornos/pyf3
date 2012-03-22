@@ -27,10 +27,13 @@ class Program( Script ):
               dest = "average",
               help = "Average" )
 
-    self.option( "-m", "--max",
+    self.option( "-f", "--furthest",
               action = "store", type = "string",
               dest = "max",
               help = "Rmax" )
+
+    self.option( "-m", "--match", action = "store_true",
+              dest = "match", default = False, help = "Match" )
 
     self.init()
   # end def __init__
@@ -83,8 +86,9 @@ class Program( Script ):
     # generate match table
     if not opts.average == None:
       gref.match()
-      print
-      ref.average( opts.average.split(":") )
+      if not opts.match:
+        print
+        ref.average( opts.average.split(":") )
   # end def main
 # end class
 
