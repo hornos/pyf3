@@ -84,11 +84,14 @@ class Program( Script ):
 
     # warning: geoms should have the same lattice
     # generate match table
+    if opts.match:
+      gref.match()
+      return
+
     if not opts.average == None:
       gref.match()
-      if not opts.match:
-        print
-        ref.average( opts.average.split(":") )
+      print
+      ref.average( opts.average.split(":") )
   # end def main
 # end class
 
