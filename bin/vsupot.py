@@ -4,6 +4,7 @@ import os
 import sys
 import string
 import numpy
+import pickle
 
 from pypak.Script import Script
 from pypak.IO.IO import IO
@@ -32,8 +33,15 @@ class Program( Script ):
               dest = "max",
               help = "Rmax" )
 
-    self.option( "-m", "--match", action = "store_true",
-              dest = "match", default = False, help = "Match" )
+    self.option( "-m", "--match",
+              action = "store", type = "float",
+              dest = "match",
+              help = "Match" )
+
+    self.option( "-k", "--cache",
+              action = "store", type = "string",
+              dest = "cache", default = "vsupot.cache",
+              help = "Match cache" )
 
     self.init()
   # end def __init__
@@ -44,18 +52,7 @@ class Program( Script ):
 
     sysopts = { "verbose" : self.verbose, "debug" : self.debug }
 
-    try:
-      inp = IO( opts.input, 'UPOT', "r", sysopts )
-      print opts.input,":"
-      inp.read()
-    except:
-      if self.debug:
-        raise
-      else:
-        print "Input failed:", opts.input
-        sys.exit(1)
-    # end try
-
+    ### begin reference
     try:
       print opts.reference,":"
       ref = IO( opts.reference, 'UPOT', "r", sysopts )
@@ -68,28 +65,57 @@ class Program( Script ):
         sys.exit(1)
     # end try
 
-    # read atomlist
-
+    # set geoms
     gref = ref.geom()
-    gref.geom = inp.geom()
 
-    # check furthest
+    # check furthest in reference
     if not opts.max == None:
       (origo,max) = opts.max.split(":")
       origo = int(origo)
       max = float(max)
-      gref.rmax(origo,max)
+      gref.furthest( origo, max )
       return
     # end if
+    ### end reference
+
+    ### begin input
+    try:
+      inp = IO( opts.input, 'UPOT', "r", sysopts )
+      print opts.input,":"
+      inp.read()
+    except:
+      if self.debug:
+        raise
+      else:
+        print "Input failed:", opts.input
+        sys.exit(1)
+    # end try
+    gref.geom = inp.geom()
+    ### end input
 
     # warning: geoms should have the same lattice
     # generate match table
-    if opts.match:
-      gref.match()
-      return
+    if not opts.match == None:
+      if not opts.cache == None:
+        match = open( opts.cache, 'wb' )
+      # end if
+      gref.match( opts.match )
+      # write out match cache
+      if not opts.cache == None:
+        pickle.dump(gref.geom_match,match,-1)
+        return
+      # end if
+    # end if
 
     if not opts.average == None:
-      gref.match()
+      if not opts.cache == None:
+        match = open( opts.cache, 'rb' )
+        gref.geom_match = pickle.load( match )
+        match.close()
+      else:
+        raise Exception( "Cache error" )
+      # end if
+
       print
       ref.average( opts.average.split(":") )
   # end def main

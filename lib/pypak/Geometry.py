@@ -377,7 +377,7 @@ class Geometry:
     self.direct()
   # end def
 
-  def rmax(self, origo = 0, rmax = 0.400):
+  def furthest(self, origo = 0, rmax = 0.400):
     half  = 0.50000000000000000
     one   = 1.00000000000000000
     origo = self.get(origo)
@@ -409,7 +409,7 @@ class Geometry:
     # end for
   # end def
 
-  def match(self, eps = 0.010000, lim = 0.900000000 ):
+  def match(self, eps = 0.010000000 ):
     self.geom_match = {}
     one = 1.0000000000000000
     if self.geom == None:
@@ -459,14 +459,16 @@ class Geometry:
 
         # check with shifted
         for i in range(0,8):
-          if l2norm(rpos-spos[i]) < 0.100000:
+          if l2norm(rpos-spos[i]) < eps:
             # found direct match
             try:
+              #print "Before try ano:",ano
+              # print self.geom_match
               self.geom_match[ano]
             except:
               self.geom_match[ano] = rno
               # print "Shifted from :",ano,asym,apos
-              # print "Shifted to   :",rno,rsym,rpos
+              #print "Shifted to   :",rno,rsym,rpos
               if asym != rsym:
                 print "Warning: Symbol mismatch:",ano,asym,rno,rsym
               lfound = True
