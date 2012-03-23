@@ -415,6 +415,7 @@ class Geometry:
     if self.geom == None:
       raise Exception("Match geometry not found")
 
+    spos = numpy.zeros([8,3])
     for atom in self.atoms:
       ano  = atom.no
       asym = atom.symbol
@@ -422,12 +423,17 @@ class Geometry:
       spos = numpy.zeros( [8, 3] )
       lfound = False
 
+      rno  = 0
+      rsym = ""
+      rpos = numpy.zeros(3)
+
       # loop over reference
       for aref in self.geom.atoms:
         rno  = aref.no
         rsym = aref.symbol
         rpos = aref.position
 
+        # TODO: +/-1 shift
         # shift match
         # spos [8,3]
         # i 0 1 2 3 4 5 6 7
@@ -435,27 +441,54 @@ class Geometry:
         # y 0   *   *   * *
         # z 0     *   * * *
 
-        # begin fill
-        for i in range(0,8):
-          for j in range(0,3):
-            spos[i][j] = apos[j]
-          # end for
-        # end for
+        spos[0][0] = apos[0]
+        spos[0][1] = apos[1]
+        spos[0][2] = apos[2]
 
-        # 1-3
-        for j in range(1,4):
-          spos[j][j-1] -= one
-        # end for
-        # 4
+        spos[1][0] = apos[0]
+        spos[1][1] = apos[1]
+        spos[1][2] = apos[2]
+
+        spos[2][0] = apos[0]
+        spos[2][1] = apos[1]
+        spos[2][2] = apos[2]
+
+        spos[3][0] = apos[0]
+        spos[3][1] = apos[1]
+        spos[3][2] = apos[2]
+
+        spos[4][0] = apos[0]
+        spos[4][1] = apos[1]
+        spos[4][2] = apos[2]
+
+        spos[5][0] = apos[0]
+        spos[5][1] = apos[1]
+        spos[5][2] = apos[2]
+
+        spos[6][0] = apos[0]
+        spos[6][1] = apos[1]
+        spos[6][2] = apos[2]
+
+        spos[7][0] = apos[0]
+        spos[7][1] = apos[1]
+        spos[7][2] = apos[2]
+
+        spos[1][0] -= one
+        spos[2][1] -= one
+        spos[3][2] -= one
+
         spos[4][0] -= one
         spos[4][1] -= one
+
         spos[5][0] -= one
         spos[5][2] -= one
+
         spos[6][1] -= one
         spos[6][2] -= one
-        for j in range(0,3):
-          spos[7][j] -= one
-        # end fill
+
+        spos[7][0] -= one
+        spos[7][1] -= one
+        spos[7][2] -= one
 
         # check with shifted
         for i in range(0,8):
