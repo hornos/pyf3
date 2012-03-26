@@ -41,6 +41,39 @@ class Geometry:
     return geom
   # end if
 
+  # direct simple supercell
+  # 3x3x3
+  def scc_333_direct( self ):
+    scc_geom = self.clone( True )
+    scc = numpy.zeros(3])
+
+    self.lat_vec[0] *= 3
+    self.lat_vec[1] *= 3
+    self.lat_vec[2] *= 3
+
+    # slow loop
+    for atom in self.atom:
+      _atom = copy.deepcopy( atom )
+      # z index
+      for i in range(-1,2):
+        scc[0] = i
+        for j in range(-1,2):
+          scc[1] = j
+          for k in range(-1,2):
+            scc[2] = k
+            # skip original
+            if scc[0] + scc[1] + scc[2] == 0:
+              continue
+            # vector add
+            _atom.position += scc
+            self.add(_atom)
+          # end for
+        # end for
+      # end for
+    # end for
+    return scc_geom
+  # end def
+
   def natoms( self ):
     return len( self.atoms )
   # end def
@@ -88,7 +121,6 @@ class Geometry:
     # end for
     print " Species:",self.species
   # end def
-
 
   def add( self, atom = None, reno = True ):
     _atom = copy.deepcopy( atom )
@@ -409,6 +441,12 @@ class Geometry:
     # end for
   # end def
 
+  def scc_match(self, eps = 0.0100000 ):
+    self.geom_match = {}
+
+    self
+  # end def
+
   def match(self, eps = 0.010000000 ):
     self.geom_match = {}
     one = 1.0000000000000000
@@ -420,7 +458,7 @@ class Geometry:
       ano  = atom.no
       asym = atom.symbol
       apos = atom.position
-      spos = numpy.zeros( [8, 3] )
+      spos = numpy.zeros([8,3])
       lfound = False
 
       rno  = 0
@@ -433,7 +471,6 @@ class Geometry:
         rsym = aref.symbol
         rpos = aref.position
 
-        # TODO: +/-1 shift
         # shift match
         # spos [8,3]
         # i 0 1 2 3 4 5 6 7

@@ -28,6 +28,11 @@ class Program( Script ):
               dest = "average",
               help = "Average" )
 
+    self.option( "-x", "--compare",
+              action = "store", type = "string",
+              dest = "compare",
+              help = "Compare" )
+
     self.option( "-f", "--furthest",
               action = "store", type = "string",
               dest = "max",
@@ -92,6 +97,18 @@ class Program( Script ):
     # end try
     gref.geom = inp.geom()
     ### end input
+
+    if not opts.compare == None:
+      complist = {}
+      pairs = opts.average.split(",")
+      for p in pairs:
+        p.split(":")
+        complist[p[0]] = p[1]
+      # end for
+      print
+      ref.compare( complist )
+      return
+    # end if
 
     # warning: geoms should have the same lattice
     # generate match table

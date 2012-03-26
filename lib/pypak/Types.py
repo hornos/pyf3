@@ -106,7 +106,13 @@ class AtomPos(VecPos):
     self.symbol = symbol
     # not the atomic number !
     self.no  = no
+
+    # ?
     self.rno = no
+
+    # scc base no for match
+    self.bno = no
+
     self.cl_shift = cl_shift
   # end def
 
