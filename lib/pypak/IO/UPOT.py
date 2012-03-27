@@ -73,6 +73,10 @@ class IO( File ):
     # end for
   # end def
 
+# PRB 78, 235104-5 (7)
+# EPA(D,q) = q * (V_Dq - V_H)
+#   shift  =     (inp  - ref)
+
   def average_upot( self, argv = None ):
     atomlist = argv['atomlist']
     ref      = argv['reference']
@@ -201,11 +205,6 @@ class IO( File ):
     avg_cl_shift /= len( atomlist )
     return avg_cl_shift
   # end def
-
-# old
-#  def average( self, argv = None ):
-#    return self.average_upot( argv )
-#  # end def
 
   def compare( self, complist = None ):
     shift = 0.00000
