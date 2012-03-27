@@ -47,8 +47,13 @@ class IO( Debug ):
     return self.handler.geom
   # end def
 
+  # TODO auto dict call by exception
   def average( self, argv = None ):
     return self.handler.average(argv)
+  # end def
+
+  def compare( self, argv = None ):
+    return self.handler.compare(argv)
   # end def
 
   def command( self, cmd = None, argv = None ):
