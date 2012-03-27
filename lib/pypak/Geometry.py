@@ -45,7 +45,7 @@ class Geometry:
   # 3x3x3
   def scc_333_direct( self ):
     scc_geom = self.clone( True )
-    scc = numpy.zeros(3])
+    scc = numpy.zeros(3)
 
     self.lat_vec[0] *= 3
     self.lat_vec[1] *= 3
