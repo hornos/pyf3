@@ -210,6 +210,8 @@ class IO( File ):
   def compare( self, complist = None ):
     shift = 0.00000
     c = 0
+    ref = self.geom
+    inp = self.geom.geom
     for k,v in complist.iteritems():
       ratom = ref.get(k)
       rpos  = ratom.position
@@ -238,10 +240,10 @@ class IO( File ):
   def average( self, atomlist = None ):
     shift = 0.00000
     c = 0
+    ref = self.geom
+    inp = self.geom.geom
     for i in atomlist:
       i = int(i)
-      ref = self.geom
-      inp = self.geom.geom
       ratom = ref.get( i )
       rpos  = ratom.position
       rcls  = ratom.cl_shift
