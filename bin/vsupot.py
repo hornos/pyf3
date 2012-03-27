@@ -100,7 +100,7 @@ class Program( Script ):
 
     if not opts.compare == None:
       complist = {}
-      pairs = opts.average.split(",")
+      pairs = opts.compare.split(",")
       for p in pairs:
         p.split(":")
         complist[p[0]] = p[1]
