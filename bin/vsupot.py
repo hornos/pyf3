@@ -102,8 +102,8 @@ class Program( Script ):
       complist = {}
       pairs = opts.compare.split(",")
       for p in pairs:
-        p.split(":")
-        complist[p[0]] = p[1]
+        (k,v) = p.split(":")
+        complist[k] = v
       # end for
       print
       ref.compare( complist )
