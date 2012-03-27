@@ -213,6 +213,8 @@ class IO( File ):
     ref = self.geom
     inp = self.geom.geom
     for k,v in complist.iteritems():
+      k = int(k)
+      v = int(v)
       ratom = ref.get(k)
       rpos  = ratom.position
       rcls  = ratom.cl_shift
