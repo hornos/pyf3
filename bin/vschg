@@ -57,10 +57,10 @@ outcar="${_p}OUTCAR"
 contcar="${_p}CONTCAR"
 
 if readable "${chgcar}" ; then
-  mv -iv "${chgcar}" "${_bn}"
+  cp -iv "${chgcar}" "${_bn}"
 fi
 
-echo "LOCPOT  : ${locpot}"
+echo "Density : ${chgcar}"
 echo "OUTCAR  : ${outcar}"
 echo "CONTCAR : ${contcar}"
 
