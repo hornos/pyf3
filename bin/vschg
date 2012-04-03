@@ -59,6 +59,7 @@ if readable "${_a}" &&
   echo "F"      >> "${cmd}"
   echo "Q"      >> "${cmd}"
   echo "Q"      >> "${cmd}"
+  echo "Q"      >> "${cmd}"
   echo "Running ${lev00}..."
   ${lev00} < "${cmd}" &> "${log}"
 
@@ -122,8 +123,6 @@ fi
 echo "wD"             >> "${cmd}"
 echo "Q"              >> "${cmd}"
 echo "Q"              >> "${cmd}"
-echo "Q"              >> "${cmd}"
-
 echo "Running ${lev00}..."
 ${lev00} < "${cmd}" &> "${log}"
 
