@@ -1,0 +1,84 @@
+#!/bin/bash
+source $(dirname ${BASH_SOURCE})/../../shf3/lib/header
+import gui
+
+function help/vslpsft() {
+  cat << EOF
+  Usage: vslpsft options
+                 -s "shift (cartesian x,y,z)"
+                 -p prefix
+                 -o origo no
+EOF
+  exit 1
+}
+
+### check
+lev00="lev00"
+if ! installed ${lev00} ; then
+  echo "Not found: ${lev00}"
+  exit 1
+fi
+
+### args
+_s=""
+_p=""
+_o=""
+while getopts hs:p:o: o; do
+  case "$o" in
+    s) _s=$OPTARG;;
+    p) _p=$OPTARG;;
+    o) _o=$OPTARG;;
+    h) help/vslpsft;;
+  esac
+done
+
+### prefix
+if ! empty "${_p}" ; then
+  _p="${_p}."
+fi
+
+### inputs
+locpot="${_p}LOCPOT"
+outcar="${_p}OUTCAR"
+contcar="${_p}CONTCAR"
+
+if readable "${locpot}" ; then
+  mv "${locpot}" LOCPOT
+fi
+
+echo "LOCPOT  : ${locpot}"
+echo "OUTCAR  : ${outcar}"
+echo "CONTCAR : ${contcar}"
+
+### main
+vsgeom="vsgeom"
+
+# get origo
+if ! empty "${_o}" ; then
+  _s=$(${vsgeom} -i "${contcar}" -s ${_o} | \
+  awk '/Cart/{print $3 "," $4 "," $5}')
+fi
+
+log="${gbn}.log"
+cmd="${gbn}.cmd"
+
+echo "V"              >  "${cmd}"
+echo "${outcar}"      >> "${cmd}"
+echo "${contcar}"     >> "${cmd}"
+echo "D"              >> "${cmd}"
+echo "L"              >> "${cmd}"
+if ! test -z "${_s}" ; then
+  echo "SHIFT   : ${_s}"
+  echo "Sf"           >> "${cmd}"
+  echo "${_s}"        >> "${cmd}"
+fi
+echo "wD"             >> "${cmd}"
+echo "Q"              >> "${cmd}"
+echo "Q"              >> "${cmd}"
+
+echo "Running ${lev00}..."
+${lev00} < "${cmd}" &> "${log}"
+
+if readable CHGCAR.new ; then
+  mv CHGCAR.new ${gbn}.LOCPOT
+fi

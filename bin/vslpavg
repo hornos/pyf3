@@ -1,0 +1,71 @@
+#!/bin/bash
+source $(dirname ${BASH_SOURCE})/../../shf3/lib/header
+import gui
+
+function help/vslpsft() {
+  cat << EOF
+  Usage: vslpsft options
+                 -r reference
+                 -p prefix
+EOF
+  exit 1
+}
+
+### check
+lev00="lev00"
+if ! installed ${lev00} ; then
+  echo "Not found: ${lev00}"
+  exit 1
+fi
+
+### args
+_r=""
+_p=""
+while getopts hr:p: o; do
+  case "$o" in
+    r) _r=$OPTARG;;
+    p) _p=$OPTARG;;
+    h|*) help/vslpsft;;
+  esac
+done
+
+### inputs
+_locpot="${_p}.LOCPOT"
+if ! test -r "${_locpot}" ; then
+  echo "Not found: ${_locpot}"
+  exit 1
+fi
+cp -v "${_locpot}" LOCPOT
+
+if ! test -r LOCPOT ; then
+  exit 1
+fi
+
+### args
+log="${gbn}.log"
+
+echo "Running ${lev00}..."
+${lev00} &> "${log}" << EOF
+V
+SiC.OUTCAR
+SiC.CONTCAR
+D
+L
+gO
+5
+Q
+Q
+Q
+EOF
+
+vksavg=$(cat "${log}" | \
+awk '/total\ charge\ in\ the\ box/{print $8}')
+
+echo "<vKSD>: ${vksavg}"
+
+# PRB 84 075155-5 (9)
+# <vKSH> - <vKSD>
+if ! test -z "${_r}" ; then
+  dvks=$(echo "${_r} - ${vksavg}" | bc)
+  echo "<vKSH> - <vKSD>: ${dvks}"
+fi
