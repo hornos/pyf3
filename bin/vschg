@@ -8,7 +8,12 @@ function help/vschg() {
                -s "shift (cartesian x,y,z)"
                -l LOCPOT
                -c CHGCAR
+               -a Density A
+               -b Density B
                -o origo no
+
+  In case of a(b) density difference is calculated 
+  accoring to A - B.
 EOF
   exit 1
 }
@@ -21,19 +26,47 @@ if ! installed ${lev00} ; then
 fi
 
 ### args
+_a=""
+_b=""
 _s=""
 _i=""
 _o=""
 _t="C"
-while getopts hs:l:c:o: o; do
+while getopts hs:l:c:o:a:b: o; do
   case "$o" in
     s) _s=$OPTARG;;
     l) _i=$OPTARG;_t="L";;
     c) _i=$OPTARG;_t="C";;
+    a) _a=$OPTARG;_t="D";;
+    b) _b=$OPTARG;_t="D";;
     o) _o=$OPTARG;;
     h) help/vschg;;
   esac
 done
+
+### density
+if readable "${_a}" &&
+   readable "${_b}" ; then
+  log="${gbn}.log"
+  cmd="${gbn}.cmd"
+  echo "VD"      > "${cmd}"
+  echo "A"      >> "${cmd}"
+  echo "${_a}"  >> "${cmd}"
+  echo "B"      >> "${cmd}"
+  echo "${_b}"  >> "${cmd}"
+  echo "rA"     >> "${cmd}"
+  echo "rB"     >> "${cmd}"
+  echo "F"      >> "${cmd}"
+  echo "Q"      >> "${cmd}"
+  echo "Q"      >> "${cmd}"
+  echo "Running ${lev00}..."
+  ${lev00} < "${cmd}" &> "${log}"
+
+  if readable CHGCAR_ab ; then
+    mv CHGCAR_ab ${gbn}.diff
+  fi
+  exit $?
+fi
 
 ### prefix
 if empty "${_i}" ; then
