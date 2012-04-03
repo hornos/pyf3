@@ -1,0 +1,49 @@
+#!/bin/bash
+source $(dirname ${BASH_SOURCE})/../../shf3/lib/header
+import gui
+
+function help/vslev() {
+  cat << EOF
+  Usage: vslev options
+              -p prefix
+EOF
+  exit 1
+}
+
+### check
+lev00="lev00"
+if ! installed ${lev00} ; then
+  echo "Not found: ${lev00}"
+  exit 1
+fi
+
+### args
+_p=""
+while getopts hp: o; do
+  case "$o" in
+    p) _p=$OPTARG;;
+    h) help/vslev;;
+  esac
+done
+
+### prefix
+if ! empty "${_p}" ; then
+  _p="${_p}."
+fi
+
+### inputs
+outcar="${_p}OUTCAR"
+contcar="${_p}CONTCAR"
+
+echo "OUTCAR  : ${outcar}"
+echo "CONTCAR : ${contcar}"
+
+### main
+log="${gbn}.log"
+cmd="${gbn}.cmd"
+
+echo "V"              >  "${cmd}"
+echo "${outcar}"      >> "${cmd}"
+echo "${contcar}"     >> "${cmd}"
+
+${lev00} < "${cmd}"
