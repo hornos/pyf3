@@ -122,6 +122,7 @@ fi
 echo "wD"             >> "${cmd}"
 echo "Q"              >> "${cmd}"
 echo "Q"              >> "${cmd}"
+echo "Q"              >> "${cmd}"
 
 echo "Running ${lev00}..."
 ${lev00} < "${cmd}" &> "${log}"
