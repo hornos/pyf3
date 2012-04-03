@@ -53,8 +53,8 @@ _bn="${_i##*.}"
 
 ### inputs
 chgcar="${_i}"
-outcar="${_p}OUTCAR"
-contcar="${_p}CONTCAR"
+outcar="${_p}.OUTCAR"
+contcar="${_p}.CONTCAR"
 
 if readable "${chgcar}" ; then
   cp -iv "${chgcar}" "${_bn}"
