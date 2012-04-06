@@ -48,6 +48,18 @@ while getopts hs:l:c:o:a:b: o; do
 done
 
 ### density
+if ! empty "${_a}" &&
+   ! readable "${_a}" ; then
+  msg "Not found: ${_a}"
+  $failure
+fi
+
+if ! empty "${_b}" &&
+   ! readable "${_b}" ; then
+  msg "Not found: ${_b}"
+  $failure
+fi
+
 if readable "${_a}" &&
    readable "${_b}" ; then
   log="${gbn}.log"
