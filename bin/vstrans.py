@@ -72,7 +72,7 @@ class Program( Script ):
     # write output
     # IO  filename  type  mode  options
     try:
-      out = IO( opts.output, 'POSCAR', "w", opts_sys )
+      out = IO( opts.output, 'POSCAR', "w+", opts_sys )
       out.geom( geom )
       if opts.cart:
         out.write( { 'pt' : PT.Cart } )
