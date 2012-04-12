@@ -13,10 +13,10 @@ class IO( Debug ):
   def __init__( self, path = None, type = None, opts = "rw", sysopts = { "verbose" : False, "debug" : False } ):
     Debug.__init__( self, sysopts )
 
-    if string.find( opts, "r" ) > -1:
-      if not os.path.isfile( path ) :
-        raise IOError, str( path )
-      # end if
+    # if string.find( opts, "r" ) > -1:
+    #  if not os.path.isfile( path ) :
+    #    raise IOError, str( path )
+    #  # end if
     # end if
     # try to load handler
     handler_module = 'pypak.IO.' + str( type )
