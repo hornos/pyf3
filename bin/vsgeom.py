@@ -22,8 +22,18 @@ class Program( Script ):
 
     self.option( "-s", "--select",
               action = "store", type = "string",
-              dest = "select", default = "0",
+              dest = "select",
               help = "Output" )
+
+    self.option( "-o", "--output",
+              action = "store", type = "string",
+              dest = "output", default = "output.POSCAR",
+              help = "Output" )
+
+    self.option( "-d", "--delete",
+              action = "store", type = "string",
+              dest = "delete",
+              help = "Delete" )
 
     self.init()
   # end def __init__
@@ -38,7 +48,16 @@ class Program( Script ):
     inp = IO( opts.input,'POSCAR', "r", sysopts )
     inp.read()
     geom = inp.geom()
-    atom = geom.get(int(opts.select))
+
+    if opts.select != None:
+      aid = int(opts.select)
+      cmd = "select"
+    if opts.delete != None:
+      aid = int(opts.delete)
+      cmd = "delete"
+    # end if
+
+    atom = geom.get(aid)
     atom.info()
 
     if geom.pt == PT.Cart:
@@ -51,7 +70,6 @@ class Program( Script ):
 
     print " Frac : %21.16f%21.16f%21.16f" % (dp[0],dp[1],dp[2])
     print " Cart : %21.16f%21.16f%21.16f" % (cp[0],cp[1],cp[2])
-
   # end def
 # end class
 
