@@ -232,12 +232,12 @@ class IO( File ):
       for i in range(0,3):
         if ipos[i] > one:
           ipos[i] -= one
-        if abs(one - ipos[]) < eps:
+        if abs(one - ipos[i]) < eps:
           ipos[i] = one - ipos[i]
 
         if rpos[i] > one:
           rpos[i] -= one
-        if abs(one - rpos[]) < eps:
+        if abs(one - rpos[i]) < eps:
           rpos[i] = one - rpos[i]
       # end for
       print "REF %4d %2s %12.9f %12.9f %12.9f %12.9f" % (ratom.no,ratom.symbol,rpos[0],rpos[1],rpos[2],rcls)
