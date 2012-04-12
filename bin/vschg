@@ -51,13 +51,13 @@ done
 if ! empty "${_a}" &&
    ! readable "${_a}" ; then
   msg "Not found: ${_a}"
-  $failure
+  exit 1
 fi
 
 if ! empty "${_b}" &&
    ! readable "${_b}" ; then
   msg "Not found: ${_b}"
-  $failure
+  exit 1
 fi
 
 if readable "${_a}" &&
