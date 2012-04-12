@@ -242,7 +242,7 @@ class IO( File ):
       # end for
       print "REF %4d %2s %12.9f %12.9f %12.9f %12.9f" % (ratom.no,ratom.symbol,rpos[0],rpos[1],rpos[2],rcls)
       print "INP %4d %2s %12.9f %12.9f %12.9f %12.9f" % (iatom.no,iatom.symbol,ipos[0],ipos[1],ipos[2],icls)
-      print "L2 INP-REF: %12,9f" %(l2norm(ipos-rpos))
+      print "L2 INP-REF: %12.9f" %(l2norm(ipos-rpos))
       # print ratom.no,ratom.symbol,ratom.position
       # print iatom.no,iatom.symbol,iatom.position
       shift += icls - rcls
