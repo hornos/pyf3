@@ -85,6 +85,7 @@ class Geometry:
   def info( self, header = False ):
     lv = self.lat_vec
     print "%20s%s" % ( "Name:", ' '+self.name )
+    print "%20s%f" % ( "Scale:", self.lat_c )
     for i in range( 0, 3 ):
       print "%20s %9.6f %9.6f %9.6f" %( "a"+str(i+1)+":",lv[i][0], lv[i][1], lv[i][2] )
     # end for
@@ -155,7 +156,6 @@ class Geometry:
   def reciprocal( self ):
     self.rec_vec = numpy.linalg.inv( self.lat_vec )
   # end def
-
 
   def position_direct( self, r = numpy.zeros( 3 ) ):
     self.reciprocal()
@@ -558,7 +558,60 @@ class Geometry:
     # print self.geom_match
   # end def
 
-  ### Parallel
+  def shift_origo( self, origo ):
+    one  = 1.000000000
+    zero = 0.000000000
+    (osy,ono) = origo.split(":")
+    ono = int(ono)
+    origo = self.get(ono)
+    if osy != origo.symbol:
+      print ' Warning: origo mismatch', osy, origo.symbol
+    # end if
+
+    opos = origo.position
+    print " shift origo"
+    origo.info()
+    for atom in self.atoms:
+      apos = atom.position
+      tmp = apos - opos
+      for i in range(0,3):
+        if tmp[i] < zero:
+          atom.tmp[i] = tmp[i] + one
+        elif tmp[i] > one:
+          atom.tmp[i] = tmp[i] - one
+        else:
+          atom.tmp[i] = tmp[i]
+      # end for
+    # end for
+  # end def
+
+  def cart_select( self, rho ):
+    crop = self.clone()
+
+    X = CUB()
+    half = 0.51000000000
+    # slow
+    for i in range(0,8):
+      RO = self.position_cart( X[i] )
+
+      # fast
+      for atom in self.atoms:
+        atmp = atom.tmp
+        r = self.position_cart( atmp )
+        if l2norm( r - RO ) >= rho:
+          if v2norm( atmp, X[i], half ):
+            if atom.valid:
+              crop.add( atom, True )
+              atom.valid = False
+          # end if
+        # end if
+
+      # end for
+    # end for
+
+    crop.normalize()
+    return crop
+  # end def
 
   ### Transformations
 

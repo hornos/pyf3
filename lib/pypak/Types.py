@@ -106,18 +106,21 @@ class AtomPos(VecPos):
     self.symbol = symbol
     # not the atomic number !
     self.no  = no
-
-    # ?
+    # temporary position
+    self.tmp = numpy.zeros( 3 )
+    # reference no
     self.rno = no
-
     # scc base no for match
     self.bno = no
-
+    # valid
+    self.valid = True
+    # average potential
     self.cl_shift = cl_shift
   # end def
 
   def info( self ):
-    print " %4d" % self.no, "%2s" % self.symbol, self.position, self.moveable
+    pos = self.position
+    print " %4d %4d %2s %9.6f %9.6f %9.6f" % (self.no, self.rno, self.symbol, pos[0], pos[1], pos[2]), self.moveable
   # end def
 
   def move( self, S = numpy.zeros( 3 ) ):

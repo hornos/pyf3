@@ -25,8 +25,21 @@ def l2norm( v ):
   return npla.norm( v )
 # end def
 
+def v2norm( v1, v2, m ):
+  for i in range(0,3):
+    if abs(v1[i]-v2[i]) > m:
+      return False
+  # end for
+  return True
+# end def
 
-# http://en.wikipedia.org/wiki/Rotation_matrix
+def sgn( v ):
+  if v < 0.0000000000:
+    return -1.0000000000
+  return 1.0000000000
+# end def
+
+# https://en.wikipedia.org/wiki/Rotation_matrix
 def ROT( u, theta ):
   R  = np.zeros((3,3))
   ct = np.zeros(2)
@@ -49,4 +62,14 @@ def ROT( u, theta ):
   R[2][0] = u[2]*u[0]*ct[1]-u[1]*st
   R[2][1] = u[2]*u[1]*ct[1]+u[0]*st
   return R
+# end def
+
+# https://en.wikipedia.org/wiki/Hypercube
+def CUB():
+  one = 1.00000000000000000
+  C = np.zeros((8,3))
+  C[3][0] = C[5][0] = C[6][0] = C[7][0] = one
+  C[2][1] = C[4][1] = C[6][1] = C[7][1] = one
+  C[1][2] = C[4][2] = C[5][2] = C[7][2] = one
+  return C
 # end def
