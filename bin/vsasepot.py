@@ -1,4 +1,8 @@
 #!/usr/bin/env python2.6
+
+# https://iopscience.iop.org/0965-0393/17/8/084002
+# pp 084002
+
 #TAB: 8
 import os
 import sys
@@ -106,7 +110,8 @@ class Program( Script ):
         print "EMPTY SELECTION, SET SMALLER RHO"
         sys.exit(1)
 
-      out = IO( 'ref.crop.POSCAR', 'POSCAR', "w+", sysopts )
+      out = 'ref.crop.POSCAR'
+      out = IO( out, 'POSCAR', "w+", sysopts )
       out.geom( crop )
       out.write()
 
@@ -139,7 +144,8 @@ class Program( Script ):
         vaclist[i] = int(vaclist[i])
       # end for
       crop = inp.average( vaclist )
-      out = IO( 'inp.crop.POSCAR', 'POSCAR', "w+", sysopts )
+      out  = 'inp.crop.POSCAR'
+      out  = IO( out, 'POSCAR', "w+", sysopts )
       out.geom( crop )
       out.write()
       return
