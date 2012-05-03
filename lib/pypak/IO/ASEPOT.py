@@ -262,37 +262,57 @@ class IO( File ):
     # end for
     print "Shift:",shift/float(c)
     print
+  # end def
 
-  # def
+  def ino( self, no, vl ):
+    vl.sort()
+    for i in vl:
+      if no > i:
+        no = no - 1
+    # end for
+    return no
+  # end def
 
-  def average( self, atomlist = None ):
+  def average( self, vaclist = None ):
     shift = 0.00000
+    one  = 1.000000
+    zero = 0.000000
     c = 0
-    ref = self.geom
-    inp = self.geom.geom
-    for i in atomlist:
-      i = int(i)
-      ratom = ref.get( i )
-      rpos  = ratom.position
-      rcls  = ratom.cl_shift
+    inp = self.geom
+    ref = self.geom.geom
 
-      j = ref.geom_match[i]
-      iatom = inp.get( j )
-      ipos  = iatom.position
-      icls  = iatom.cl_shift
+    for aref in ref.atoms:
+      # reference
+      rno  = aref.rno
+      rpos = aref.position
+      rcls = aref.cl_shift
 
-      if ratom.symbol != iatom.symbol:
+      # input
+      ino  = self.ino( rno, vaclist )
+      if(ino!=rno):
+        print "INDEX SHIFT: %d -> %d" %(rno,ino)
+      ainp = inp.get(ino)
+      ipos = ainp.position
+      icls = ainp.cl_shift
+
+      if aref.symbol != ainp.symbol:
         raise Warning( "Symbol mismatch!" )
 
-      print "REF %4d %2s %12.9f %12.9f %12.9f %12.9f" % (ratom.no,ratom.symbol,rpos[0],rpos[1],rpos[2],rcls)
-      print "INP %4d %2s %12.9f %12.9f %12.9f %12.9f" % (iatom.no,iatom.symbol,ipos[0],ipos[1],ipos[2],icls)
-
-      # print ratom.no,ratom.symbol,ratom.position
-      # print iatom.no,iatom.symbol,iatom.position
+      # G2012-04-12
+      # normalize coordinates
+      ipos = rcnorm( ipos, 0.01 )
+      rpos = rcnorm( rpos, 0.01 )
+      dist = l2norm(ipos-rpos)
+      print "REF %4d %2s %12.9f %12.9f %12.9f %12.9f" % (rno,aref.symbol,rpos[0],rpos[1],rpos[2],rcls)
+      print "INP %4d %2s %12.9f %12.9f %12.9f %12.9f" % (ainp.no,ainp.symbol,ipos[0],ipos[1],ipos[2],icls)
+      if(dist > 0.05):
+        print "HIGH DISTANCE"
+      print "L2(INP-REF) %12.9f  Shift  %12.9f" %(dist,icls-rcls)
+      print
       shift += icls - rcls
       c += 1
     # end for
-    print "Shift:",shift/float(c)
+    print "APS %4d %12.9f" % ( c, shift/float(c) )
     print
   # end def
 

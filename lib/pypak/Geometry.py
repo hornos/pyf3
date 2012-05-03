@@ -573,15 +573,10 @@ class Geometry:
     origo.info()
     for atom in self.atoms:
       apos = atom.position
-      tmp = apos - opos
-      for i in range(0,3):
-        if tmp[i] < zero:
-          atom.tmp[i] = tmp[i] + one
-        elif tmp[i] > one:
-          atom.tmp[i] = tmp[i] - one
-        else:
-          atom.tmp[i] = tmp[i]
-      # end for
+
+      tmp = rcnorm( apos - opos )
+      atom.tmp = tmp
+
     # end for
   # end def
 
@@ -599,7 +594,7 @@ class Geometry:
         atmp = atom.tmp
         r = self.position_cart( atmp )
         if l2norm( r - RO ) >= rho:
-          if v2norm( atmp, X[i], half ):
+          if rvnorm( atmp, X[i], half ):
             if atom.valid:
               crop.add( atom, True )
               atom.valid = False

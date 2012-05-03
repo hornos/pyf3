@@ -102,6 +102,9 @@ class Program( Script ):
     if not opts.rho == None:
       rho = float( opts.rho )
       crop = gref.cart_select( rho )
+      if crop.ac == 0:
+        print "EMPTY SELECTION, SET SMALLER RHO"
+        sys.exit(1)
 
       out = IO( 'vsasepot.crop.POSCAR', 'POSCAR', "w+", sysopts )
       out.geom( crop )
@@ -110,7 +113,6 @@ class Program( Script ):
       # for atom in crop.atoms:
       #   atom.info()
       # # end for
-      return
     # end if
     ### end reference
 
@@ -127,12 +129,14 @@ class Program( Script ):
         print "Input failed:", opts.input
         sys.exit(1)
     # end try
-    gref.geom = inp.geom()
+    igeom = inp.geom()
+    igeom.geom = crop
     ### end input
 
     if not opts.vacancy == None:
       vaclist = opts.vacancy.split(",")
-      ref.aps( vaclist )
+      # print vaclist
+      inp.average( vaclist )
       return
     # end if
 

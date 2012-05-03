@@ -9,6 +9,11 @@ import math as m
 import numpy as np
 import numpy.linalg as npla
 
+ZERO =  0.0000000000000000000
+ONE  =  1.0000000000000000000
+MONE = -1.0000000000000000000
+HALF =  0.5000000000000000000
+
 def array2float( arr ):
   for i in range( 0, len( arr ) ):
     arr[i] = string.atof( arr[i] )
@@ -21,11 +26,13 @@ def string2float( s ):
   return array2float( s )
 # end def
 
+# L2 norm of a 3D vector
 def l2norm( v ):
   return npla.norm( v )
 # end def
 
-def v2norm( v1, v2, m ):
+# norm check of direct vectors
+def rvnorm( v1, v2, m ):
   for i in range(0,3):
     if abs(v1[i]-v2[i]) > m:
       return False
@@ -33,11 +40,25 @@ def v2norm( v1, v2, m ):
   return True
 # end def
 
-def sgn( v ):
-  if v < 0.0000000000:
-    return -1.0000000000
-  return 1.0000000000
+# normalize relative coords
+def rcnorm( v, eps = ZERO ):
+  for i in range(0,3):
+    if v[i] < ZERO - eps:
+      v[i] = v[i] + ONE
+    elif v[i] > ONE - eps:
+      v[i] = v[i] - ONE
+    else:
+      v[i] = v[i]
+    # end for
+  return v
 # end def
+
+def sgn( v ):
+  if v < ZERO:
+    return MONE
+  return ONE
+# end def
+
 
 # https://en.wikipedia.org/wiki/Rotation_matrix
 def ROT( u, theta ):
