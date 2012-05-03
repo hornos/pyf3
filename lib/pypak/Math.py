@@ -32,9 +32,9 @@ def l2norm( v ):
 # end def
 
 # norm check of direct vectors
-def rvnorm( v1, v2, m ):
+def rvnorm( v, m ):
   for i in range(0,3):
-    if abs(v1[i]-v2[i]) > m:
+    if abs(v[i]) > m:
       return False
   # end for
   return True

@@ -108,6 +108,8 @@ class AtomPos(VecPos):
     self.no  = no
     # temporary position
     self.tmp = numpy.zeros( 3 )
+    # distance
+    self.dist = 0.000
     # reference no
     self.rno = no
     # scc base no for match

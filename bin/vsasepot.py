@@ -135,7 +135,9 @@ class Program( Script ):
 
     if not opts.vacancy == None:
       vaclist = opts.vacancy.split(",")
-      # print vaclist
+      for i in range(0,len(vaclist)):
+        vaclist[i] = int(vaclist[i])
+      # end for
       inp.average( vaclist )
       return
     # end if

@@ -267,7 +267,7 @@ class IO( File ):
   def ino( self, no, vl ):
     vl.sort()
     for i in vl:
-      if no > i:
+      if no >= i:
         no = no - 1
     # end for
     return no
@@ -303,13 +303,15 @@ class IO( File ):
       ipos = rcnorm( ipos, 0.01 )
       rpos = rcnorm( rpos, 0.01 )
       dist = l2norm(ipos-rpos)
+      ps = icls-rcls
       print "REF %4d %2s %12.9f %12.9f %12.9f %12.9f" % (rno,aref.symbol,rpos[0],rpos[1],rpos[2],rcls)
       print "INP %4d %2s %12.9f %12.9f %12.9f %12.9f" % (ainp.no,ainp.symbol,ipos[0],ipos[1],ipos[2],icls)
       if(dist > 0.05):
         print "HIGH DISTANCE"
-      print "L2(INP-REF) %12.9f  Shift  %12.9f" %(dist,icls-rcls)
+      print "L2(INP-REF) %12.9f  Shift  %12.9f" %(dist,ps)
+      print "ASEDIFF %4d %2s %12.9f %12.9f" %(rno,aref.symbol,aref.dist,ps)
       print
-      shift += icls - rcls
+      shift += ps
       c += 1
     # end for
     print "APS %4d %12.9f" % ( c, shift/float(c) )

@@ -593,9 +593,13 @@ class Geometry:
       for atom in self.atoms:
         atmp = atom.tmp
         r = self.position_cart( atmp )
-        if l2norm( r - RO ) >= rho:
-          if rvnorm( atmp, X[i], half ):
+        dr = r - RO
+        dx = atmp - X[i]
+        if l2norm( dr) >= rho:
+          if rvnorm( dx, half ):
             if atom.valid:
+              atom.dist = l2norm(dr)
+              print "SELECT %4d %2s %12.9f" % (atom.no,atom.symbol,atom.dist), dx
               crop.add( atom, True )
               atom.valid = False
           # end if
