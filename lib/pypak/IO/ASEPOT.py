@@ -284,6 +284,9 @@ class IO( File ):
     # for crop check
     crop = self.geom.clone()
 
+    err_symbol = {}
+    err_dist = {}
+
     for aref in ref.atoms:
       # reference
       rno  = aref.rno
@@ -301,6 +304,8 @@ class IO( File ):
 
       if aref.symbol != ainp.symbol:
         raise Warning( "Symbol mismatch!" )
+        err_symbol[rno] = ino
+      # end if
 
       # G2012-04-12
       # normalize coordinates
@@ -312,12 +317,51 @@ class IO( File ):
       print "INP %4d %2s %12.9f %12.9f %12.9f %12.9f" % (ainp.no,ainp.symbol,ipos[0],ipos[1],ipos[2],icls)
       if(dist > 0.05):
         print "HIGH DISTANCE"
+        err_dist[rno] = ino
+      # end if
       print "L2(INP-REF) %12.9f  Shift  %12.9f" %(dist,ps)
       print "ASEDIFF %4d %2s %12.9f %12.9f" %(rno,aref.symbol,aref.dist,ps)
       print
       shift += ps
       c += 1
     # end for
+
+    if len(err_symbol):
+      print
+      print "Symbol mismatch"
+      for k,v in err_symbol.iteritems():
+        rno=int(k)
+        ino=int(v)
+        aref=ref.get(rno)
+        ainp=inp.get(ino)
+        rpos=aref.position
+        ipos=ainp.position
+        rcls = aref.cl_shift
+        icls = ainp.cl_shift
+        print "ERR SYMB REF %4d %2s %12.9f %12.9f %12.9f %12.9f" % (rno,aref.symbol,rpos[0],rpos[1],rpos[2],rcls)
+        print "ERR SYMB INP %4d %2s %12.9f %12.9f %12.9f %12.9f" % (ino,ainp.symbol,ipos[0],ipos[1],ipos[2],icls)
+        print
+      # end for
+    # end if
+
+    if len(err_dist):
+      print
+      print "High distance"
+      for k,v in err_symbol.iteritems():
+        rno=int(k)
+        ino=int(v)
+        aref=ref.get(rno)
+        ainp=inp.get(ino)
+        rpos=aref.position
+        ipos=ainp.position
+        rcls = aref.cl_shift
+        icls = ainp.cl_shift
+        print "ERR DIST REF %4d %2s %12.9f %12.9f %12.9f %12.9f" % (rno,aref.symbol,rpos[0],rpos[1],rpos[2],rcls)
+        print "ERR DIST INP %4d %2s %12.9f %12.9f %12.9f %12.9f" % (ino,ainp.symbol,ipos[0],ipos[1],ipos[2],icls)
+        print
+      # end for
+    # end if
+
     print "APS %4d %12.9f" % ( c, shift/float(c) )
     print
 
