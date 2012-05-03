@@ -106,7 +106,7 @@ class Program( Script ):
         print "EMPTY SELECTION, SET SMALLER RHO"
         sys.exit(1)
 
-      out = IO( 'vsasepot.crop.POSCAR', 'POSCAR', "w+", sysopts )
+      out = IO( 'ref.crop.POSCAR', 'POSCAR', "w+", sysopts )
       out.geom( crop )
       out.write()
 
@@ -138,7 +138,10 @@ class Program( Script ):
       for i in range(0,len(vaclist)):
         vaclist[i] = int(vaclist[i])
       # end for
-      inp.average( vaclist )
+      crop = inp.average( vaclist )
+      out = IO( 'inp.crop.POSCAR', 'POSCAR', "w+", sysopts )
+      out.geom( crop )
+      out.write()
       return
     # end if
 

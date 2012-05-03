@@ -281,6 +281,9 @@ class IO( File ):
     inp = self.geom
     ref = self.geom.geom
 
+    # for crop check
+    crop = self.geom.clone()
+
     for aref in ref.atoms:
       # reference
       rno  = aref.rno
@@ -294,6 +297,7 @@ class IO( File ):
       ainp = inp.get(ino)
       ipos = ainp.position
       icls = ainp.cl_shift
+      crop.add(ainp)
 
       if aref.symbol != ainp.symbol:
         raise Warning( "Symbol mismatch!" )
@@ -316,6 +320,10 @@ class IO( File ):
     # end for
     print "APS %4d %12.9f" % ( c, shift/float(c) )
     print
+
+    crop.normalize()
+    #crop.info()
+    return crop
   # end def
 
 # end class
