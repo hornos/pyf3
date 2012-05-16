@@ -7,6 +7,7 @@ import sys
 import string
 import magic
 import gzip
+import re
 
 from pypak.Types import *
 
@@ -21,7 +22,7 @@ class File( Debug ):
     self.dict    = {}
     self.ibuffer = Buffer()
     self.obuffer = Buffer()
-    if string.find( self.opts, "r" ) > -1:
+    if re.search( "r", opts ) != None:
       self.iotype  = IOT.Input
       self.buffer  = self.ibuffer
       self.read_buffer()
