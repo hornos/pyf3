@@ -89,6 +89,13 @@ class IO( File ):
   # end def
 
   def grid(self, kp = 0):
-    return self.eigs[kp,:,1]
+    return self.eigs[kp,...,1:3]
   # end def
+
+  def grid_min(self, kp = 0 ):
+    return self.eigs[kp,0,1]
+  # end def
+
+  def grid_max(self, kp = 0 ):
+    return self.eigs[kp,self.nbands-1,1]
 # end class

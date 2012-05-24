@@ -94,3 +94,20 @@ def CUB():
   C[1][2] = C[4][2] = C[5][2] = C[7][2] = one
   return C
 # end def
+
+def GAUSS(x, A=1, mu=1, sigma=1):
+  """
+  Evaluate Gaussian.
+
+  Parameters
+  ----------
+  A : float
+      Amplitude.
+  mu : float
+      Mean.
+  std : float
+      Standard deviation.
+
+  """
+  return np.real(A * np.exp(-(x - mu)**2 / (2 * sigma**2)))
+# end def
