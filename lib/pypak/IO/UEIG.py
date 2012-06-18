@@ -24,13 +24,20 @@ class IO( File ):
     self.rewind()
     self.clean()
     self.state( 1, self.comment )
-    self.state( 2, self.comment )
+    self.state( 2, self.read_nions )
     self.state( 3, self.comment )
     self.state( 4, self.read_efermi )
     self.state( 5, self.comment )
     self.state( 6, self.read_nelect )
     self.state( 7, self.read_eigs )
     File.run( self )
+  # end def
+
+  def read_nions( self ):
+    (nions,nspin) = self.line()
+    self.nions = string.atoi( nions )
+    self.nspin = string.atoi( nspin )
+    self.process()
   # end def
 
   def read_efermi( self ):
@@ -58,19 +65,19 @@ class IO( File ):
         self.getline()
       self.getline()
       self.getline()
-      print "nk", self.line()
+      # print "nk", self.line()
       (nk,vkpt1,vkpt2,vkpt3,wtkpt) = self.line()
       self.getline()
       self.getline()
-      print "sp", self.line()
+      # print "sp", self.line()
       (spl,spin) = self.line()
       self.spl = string.atoi(spl)
       self.getline()
 
       for j in range(0,self.nbands):
         self.getline()
-        print self.line()
-        if(self.spl>0):
+        # print self.line()
+        if(self.nspin > 1):
           (band,eig1,occ1,eig2,occ2) = self.line()
           self.eigs[i][j][0] = string.atof(band)
           self.eigs[i][j][1] = string.atof(eig1)
@@ -88,14 +95,23 @@ class IO( File ):
     # end for nkpts
   # end def
 
-  def grid(self, kp = 0):
-    return self.eigs[kp,...,1:3]
+  def grid(self, kp = 0,sp=1):
+    if sp==1:
+      return self.eigs[kp,...,1:3]
+    if sp==2:
+      return self.eigs[kp,...,3:5]
   # end def
 
-  def grid_min(self, kp = 0 ):
-    return self.eigs[kp,0,1]
+  def grid_min(self, kp = 0,sp=1):
+    if sp==1:
+      return self.eigs[kp,0,1]
+    if sp==2:
+      return self.eigs[kp,0,3]
   # end def
 
-  def grid_max(self, kp = 0 ):
-    return self.eigs[kp,self.nbands-1,1]
+  def grid_max(self, kp = 0,sp=1):
+    if sp==1:
+      return self.eigs[kp,self.nbands-1,1]
+    if sp==2:
+      return self.eigs[kp,self.nbands-1,3]
 # end class
