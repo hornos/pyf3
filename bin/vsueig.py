@@ -116,13 +116,15 @@ class Program( Script ):
     i_range=len(inp_grid)
     j_range=len(inp_comp_grid[0])
 
-    # TODO: mpi4py
+    # TODO: mpi4py fortran gauss
     for i in range(0,i_range):
       mu = inp_grid[i,0]
       A  = inp_grid[i,1]
       # print mu,A
       for j in range(0,j_range):
         x = inp_comp_grid[0,j]
+        if abs(x-mu) > 3*sig:
+          continue
         # print x
         # fx
         inp_comp_grid[1,j] += GAUSS( x, A , mu, sig )
