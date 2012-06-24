@@ -10,9 +10,14 @@ import numpy as np
 from pypak.Script import Script
 from pypak.IO.IO  import IO
 from pypak.Types  import *
-from pypak.Math   import *
 from pypak.Util   import *
 from pypak.Plot   import *
+
+try:
+  from kernel.vsueig import *
+except ImportError:
+  print "Kernel import error"
+  from pypak.Math   import *
 
 class Program( Script ):
   def __init__( self ):

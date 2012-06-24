@@ -5,5 +5,9 @@
 _*
 scr/*
 pkg/*
+*.so
+lib/kernel/vsueig.py
+*_wrap.*
+
 
 
