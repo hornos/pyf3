@@ -9,6 +9,7 @@ pkg/*
 *.o
 lib/kernel/vsueig.py
 lib/kernel/numpy.i
+lib/kernel/build
 *_wrap.*
 
 
