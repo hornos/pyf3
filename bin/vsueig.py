@@ -71,7 +71,7 @@ class Program( Script ):
     self.option( "-z", "--sigma",
               action = "store", type = "float",
               dest = "sigma",
-              help = "Sigma", default = 1.0 )
+              help = "Sigma", default = 0.1 )
 
     self.option( "-s", "--spin",
               action = "store", type = "int",
@@ -81,7 +81,7 @@ class Program( Script ):
     self.option( "-x", "--rate",
               action = "store", type = "int",
               dest = "rate",
-              help = "Sampling rate", default = 0.5 )
+              help = "Sampling rate", default = 100 )
 
     self.option( "-k", "--kpoint",
               action = "store", type = "int",
