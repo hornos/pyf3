@@ -121,12 +121,14 @@ class Program( Script ):
     inp_ueig = inp.handler
 
     # grid for k-point: eig occ
-    inp_grid = inp_ueig.grid(opts.kp,opts.sp)
+    kp = opts.kp - 1
+    sp = opts.sp - 1 
+    inp_grid = inp_ueig.grid(kp,sp)
     # print inp_grid
 
     # create input fine grid
-    low  = inp_ueig.grid_min(opts.kp,opts.sp) - wsig
-    high = inp_ueig.grid_max(opts.kp,opts.sp) + wsig
+    low  = inp_ueig.grid_min(kp,sp) - wsig
+    high = inp_ueig.grid_max(kp,sp) + wsig
 
     #print low, high
     rate = opts.rate

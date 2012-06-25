@@ -95,23 +95,22 @@ class IO( File ):
     # end for nkpts
   # end def
 
-  def grid(self, kp = 0,sp=1):
-    if sp==1:
-      return self.eigs[kp,...,1:3]
-    if sp==2:
-      return self.eigs[kp,...,3:5]
+  def grid(self, kp = 0,sp=0):
+    spi = sp*2+1
+    spj = (sp+1)*2+1
+    # 1 3
+    # 3 5
+    return self.eigs[kp,...,spi:spj]
   # end def
 
-  def grid_min(self, kp = 0,sp=1):
-    if sp==1:
-      return self.eigs[kp,0,1]
-    if sp==2:
-      return self.eigs[kp,0,3]
+  def grid_min(self, kp = 0,sp=0):
+    # 1 3
+    spi = sp*2+1
+    return self.eigs[kp,0,spi]
   # end def
 
-  def grid_max(self, kp = 0,sp=1):
-    if sp==1:
-      return self.eigs[kp,self.nbands-1,1]
-    if sp==2:
-      return self.eigs[kp,self.nbands-1,3]
+  def grid_max(self, kp = 0,sp=0):
+    # 1 3
+    spi = sp*2+1
+    return self.eigs[kp,self.nbands-1,spi]
 # end class

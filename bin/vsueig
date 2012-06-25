@@ -8,6 +8,8 @@ echo
 msg
 gui/line
 
+OMP_NUM_THREADS=2
+
 # default lib path
 sys/py/lib
 # run python
