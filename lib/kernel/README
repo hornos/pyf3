@@ -1,1 +1,5 @@
-Run make
+Swig C kernels
+
+Install:
+1. copy numpy.i
+2. run make
