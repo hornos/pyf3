@@ -20,6 +20,11 @@ class Program( Script ):
               dest = "inp", default = "UEIG",
               help = "Input" )
 
+    self.option( "-r", "--reference",
+              action = "store", type = "string",
+              dest = "ref", default = "ref_UEIG",
+              help = "Reference" )
+
     self.option( "-x", "--column",
               action = "store", type = "int",
               dest = "col",
@@ -34,8 +39,10 @@ class Program( Script ):
     (opts, args) = self.parse()
 
     sysopts = { "verbose" : self.verbose, "debug" : self.debug }
-    data=load(opts.inp)
-    plot(data,opts.col)
+    data1=load(opts.inp)
+    data2=load(opts.ref)
+
+    plot2(data1,data2,opts.col)
 # end class
 
 ### BEGIN MAIN
