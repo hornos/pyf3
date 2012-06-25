@@ -6,6 +6,7 @@ _*
 scr/*
 pkg/*
 *.so
+*.o
 lib/kernel/vsueig.py
 lib/kernel/numpy.i
 *_wrap.*
