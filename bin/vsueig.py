@@ -13,11 +13,46 @@ from pypak.Types  import *
 from pypak.Util   import *
 from pypak.Plot   import *
 
-try:
-  from kernel.vsueig import *
-except ImportError:
-  print "Kernel import error"
-  from pypak.Math   import *
+
+### Kernel wrapper
+def gendos( sig, inp_grid, inp_comp_grid ):
+  try:
+    import kernel.vsueig as kernel
+    inp_grid_cont = c_cont( inp_grid )
+    inp_comp_grid_cont = c_cont( inp_comp_grid )
+    kernel.gendos( sig, inp_grid_cont, inp_comp_grid_cont )
+    return
+  except ImportError:
+    from pypak.Math   import GAUSS,DGAUSS
+
+  from time import clock
+
+  print "Python Kernel"
+  i_range=len(inp_grid)
+  j_range=len(inp_comp_grid[0])
+
+  start = clock()
+  # inp_grid 2d float
+  # inp_comp_grid 2 float
+  for i in range(0,i_range):
+    mu = inp_grid[i,0]
+    A  = inp_grid[i,1]
+    # print mu,A
+    for j in range(0,j_range):
+      x = inp_comp_grid[0,j]
+      if abs(x-mu) > 3*sig:
+        continue
+      # print x
+      # fx
+      inp_comp_grid[1,j] += GAUSS( x, A , mu, sig )
+      # d/dx fx
+      inp_comp_grid[2,j] += DGAUSS( x, A, mu, sig )
+    # end for
+  # end for
+  elapsed = (clock() - start)
+  print "Elapsed time: %9.6lf s" % elapsed
+# end def
+
 
 class Program( Script ):
   def __init__( self ):
@@ -118,30 +153,16 @@ class Program( Script ):
     # sys.exit(0)
 
     # generating DOS
-    i_range=len(inp_grid)
-    j_range=len(inp_comp_grid[0])
-
-    # TODO: mpi4py fortran gauss
-    for i in range(0,i_range):
-      mu = inp_grid[i,0]
-      A  = inp_grid[i,1]
-      # print mu,A
-      for j in range(0,j_range):
-        x = inp_comp_grid[0,j]
-        if abs(x-mu) > 3*sig:
-          continue
-        # print x
-        # fx
-        inp_comp_grid[1,j] += GAUSS( x, A , mu, sig )
-        # d/dx fx
-        inp_comp_grid[2,j] += DGAUSS( x, A, mu, sig )
-      # end for
-    # end for
+    # if there is a kernel use it
+    gendos( sig, inp_grid, inp_comp_grid )
 
     # output
     out_name = opts.out + "_kp_" + str(opts.kp) + "_sp_" + str(opts.sp)
     out = open( out_name , 'w')
     out.write( "" )
+
+    i_range=len(inp_grid)
+    j_range=len(inp_comp_grid[0])
 
     # create & write out dos
     dos = np.zeros( (j_range,3) )

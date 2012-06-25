@@ -19,6 +19,12 @@ import_array();
 
 %apply (int DIM1, int DIM2, TYPE* INPLACE_ARRAY2)
       {(int dim1, int dim2, TYPE* array2)};
+
+%apply (int DIM1, int DIM2, TYPE* INPLACE_ARRAY2)
+      {(int dim1_1, int dim2_1, TYPE* array2_1),
+       (int dim1_2, int dim2_2, TYPE* array2_2)};
+
+
 %enddef
 %apply_numpy_typemaps(signed char       )
 %apply_numpy_typemaps(unsigned char     )
