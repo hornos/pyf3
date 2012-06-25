@@ -21,6 +21,8 @@ _vsueig = Extension("_vsueig",
                     "vsueig.c"],
                    include_dirs = [numpy_include],
                    libraries=['m'],
+                   extra_compile_args=['-fopenmp'],
+                   extra_link_args=['-fopenmp'],
                    )
 
 setup(name        = "kernel",

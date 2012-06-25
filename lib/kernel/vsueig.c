@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <omp.h>
 #include "kernel.h"
 
 /* Gauss Function
@@ -61,10 +62,12 @@ void gendos(double sig, int dim1_1, int dim2_1, double *array2_1, int dim1_2, in
 
   // Timing
   clock_t t[2];
+  double wt[2];
 
   printf( "C kernel: %s (%s)\n", __FUNCTION__, __FILE__ );
-  printf( "array 1: %6d %6d\n", dim1_1, dim2_1 );
-  printf( "array 2: %6d %6d\n", dim1_2, dim2_2 );
+  printf("%5s %8s %8s\n", "Array", "dim1", "dim2");
+  printf( "%5d %8d %8d\n", 1, dim1_1, dim2_1 );
+  printf( "%5d %8d %8d\n", 2, dim1_2, dim2_2 );
 
   t[0] = clock();
 
@@ -72,6 +75,56 @@ void gendos(double sig, int dim1_1, int dim2_1, double *array2_1, int dim1_2, in
   j_range = dim2_2;
 
   gw = CUTOFF * sig;
+
+#ifdef _OPENMP
+  printf("OpenMP Threads: %d\n", omp_get_max_threads());
+
+#pragma omp parallel private(i,j,mu,A,x,wt)
+
+{
+#pragma omp sections
+{
+
+#pragma omp section
+{
+  wt[0] = omp_get_wtime();
+  for( i = 0; i < i_range; i++ ) {
+    mu = cij(dim1_1,dim2_1,inp_grid,i,0);
+    A  = cij(dim1_1,dim2_1,inp_grid,i,1);
+    for( j = 0; j < j_range; j++ ) {
+      x = cij(dim1_2,dim2_2,inp_comp_grid,0,j);
+      if( abs( x - mu ) > gw )
+        continue;
+      sij(dim1_2,dim2_2,inp_comp_grid,1,j,GAUSS(x,A,mu,sig));
+      // sij(dim1_2,dim2_2,inp_comp_grid,2,j,DGAUSS(x,A,mu,sig));
+    }
+  }
+  wt[1] = omp_get_wtime();
+  printf("%2d/%2d Elapsed: %9.6lf s\n", omp_get_thread_num(), omp_get_num_threads(), wt[1]-wt[0]);
+}
+
+#pragma omp section
+{
+  wt[0] = omp_get_wtime();
+  for( i = 0; i < i_range; i++ ) {
+    mu = cij(dim1_1,dim2_1,inp_grid,i,0);
+    A  = cij(dim1_1,dim2_1,inp_grid,i,1);
+    for( j = 0; j < j_range; j++ ) {
+      x = cij(dim1_2,dim2_2,inp_comp_grid,0,j);
+      if( abs( x - mu ) > gw )
+        continue;
+      // sij(dim1_2,dim2_2,inp_comp_grid,1,j,GAUSS(x,A,mu,sig));
+      sij(dim1_2,dim2_2,inp_comp_grid,2,j,DGAUSS(x,A,mu,sig));
+    }
+  }
+  wt[1] = omp_get_wtime();
+  printf("%2d/%2d Elapsed: %9.6lf s\n", omp_get_thread_num(), omp_get_num_threads(), wt[1]-wt[0]);
+}
+
+} // sections
+} // parallel
+// omp parallel end
+#else
   for( i = 0; i < i_range; i++ ) {
     mu = cij(dim1_1,dim2_1,inp_grid,i,0);
     A  = cij(dim1_1,dim2_1,inp_grid,i,1);
@@ -83,7 +136,8 @@ void gendos(double sig, int dim1_1, int dim2_1, double *array2_1, int dim1_2, in
       sij(dim1_2,dim2_2,inp_comp_grid,2,j,DGAUSS(x,A,mu,sig));
     }
   }
+#endif
 
   t[1] = clock();
-  printf("Elapsed time: %9.6lf s\n",(t[1]-t[0])/(double)CLOCKS_PER_SEC);
+  printf("Total Elapsed: %9.6lf s\n",(t[1]-t[0])/(double)CLOCKS_PER_SEC);
 }
