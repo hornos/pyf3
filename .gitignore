@@ -3,6 +3,7 @@
 *.sqlite
 *.pyc
 _*
+!__init__.py
 scr/*
 pkg/*
 *.so
