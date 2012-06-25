@@ -5,7 +5,7 @@ PROXIES    = $(INTERFACES:.i=.py    )
 
 # Default target: build the tests
 .PHONY : all
-all: $(WRAPPERS) test.c test.h vsueig.c vsueig.h
+all: $(WRAPPERS) test.c test.h vsueig.c vsueig.h kernel.h
 	./setup.py build_ext -i
 
 # Rule: %.i -> %_wrap.cxx
