@@ -48,7 +48,7 @@ double DGAUSS(double x, double A, double mu, double sigma ) {
 // Gauss cutoff
 #define CUTOFF 3
 
-void gendos(double sig, int dim1_1, int dim2_1, double *array2_1, int dim1_2, int dim2_2, double *array2_2 ) {
+void gendos(double amp, double sig, int dim1_1, int dim2_1, double *array2_1, int dim1_2, int dim2_2, double *array2_2 ) {
   // Array interface
   int i_range = dim1_1;
   int j_range = dim2_2;
@@ -90,7 +90,7 @@ void gendos(double sig, int dim1_1, int dim2_1, double *array2_1, int dim1_2, in
   wt[0] = omp_get_wtime();
   for( i = 0; i < i_range; i++ ) {
     mu = cij(dim1_1,dim2_1,inp_grid,i,0);
-    A  = cij(dim1_1,dim2_1,inp_grid,i,1);
+    A  = cij(dim1_1,dim2_1,inp_grid,i,1) * amp;
     for( j = 0; j < j_range; j++ ) {
       x = cij(dim1_2,dim2_2,inp_comp_grid,0,j);
       if( abs( x - mu ) > gw )
@@ -108,7 +108,7 @@ void gendos(double sig, int dim1_1, int dim2_1, double *array2_1, int dim1_2, in
   wt[0] = omp_get_wtime();
   for( i = 0; i < i_range; i++ ) {
     mu = cij(dim1_1,dim2_1,inp_grid,i,0);
-    A  = cij(dim1_1,dim2_1,inp_grid,i,1);
+    A  = cij(dim1_1,dim2_1,inp_grid,i,1) * amp;
     for( j = 0; j < j_range; j++ ) {
       x = cij(dim1_2,dim2_2,inp_comp_grid,0,j);
       if( abs( x - mu ) > gw )
@@ -127,7 +127,7 @@ void gendos(double sig, int dim1_1, int dim2_1, double *array2_1, int dim1_2, in
 #else
   for( i = 0; i < i_range; i++ ) {
     mu = cij(dim1_1,dim2_1,inp_grid,i,0);
-    A  = cij(dim1_1,dim2_1,inp_grid,i,1);
+    A  = cij(dim1_1,dim2_1,inp_grid,i,1) * amp;
     for( j = 0; j < j_range; j++ ) {
       x = cij(dim1_2,dim2_2,inp_comp_grid,0,j);
       if( abs( x - mu ) > gw )

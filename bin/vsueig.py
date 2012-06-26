@@ -15,12 +15,12 @@ from pypak.Plot   import *
 
 
 ### Kernel wrapper
-def gendos( sig, inp_grid, inp_comp_grid ):
+def gendos( amp, sig, inp_grid, inp_comp_grid ):
   try:
     import kernel.vsueig as kernel
     inp_grid_cont = c_cont( inp_grid )
     inp_comp_grid_cont = c_cont( inp_comp_grid )
-    kernel.gendos( sig, inp_grid_cont, inp_comp_grid_cont )
+    kernel.gendos( amp, sig, inp_grid_cont, inp_comp_grid_cont )
     return
   except ImportError:
     from pypak.Math   import GAUSS,DGAUSS
@@ -36,7 +36,7 @@ def gendos( sig, inp_grid, inp_comp_grid ):
   # inp_comp_grid 2 float
   for i in range(0,i_range):
     mu = inp_grid[i,0]
-    A  = inp_grid[i,1]
+    A  = inp_grid[i,1] * amp
     # print mu,A
     for j in range(0,j_range):
       x = inp_comp_grid[0,j]
@@ -72,6 +72,11 @@ class Program( Script ):
               action = "store", type = "float",
               dest = "sigma",
               help = "Sigma", default = 0.1 )
+
+    self.option( "-a", "--amp",
+              action = "store", type = "float",
+              dest = "amp",
+              help = "Amplitudo", default = 1.0 )
 
     self.option( "-s", "--spin",
               action = "store", type = "int",
@@ -156,7 +161,7 @@ class Program( Script ):
 
     # generating DOS
     # if there is a kernel use it
-    gendos( sig, inp_grid, inp_comp_grid )
+    gendos( amp, sig, inp_grid, inp_comp_grid )
 
     # output
     out_name = opts.out + "_kp_" + str(opts.kp) + "_sp_" + str(opts.sp)
