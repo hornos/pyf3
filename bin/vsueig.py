@@ -106,8 +106,9 @@ class Program( Script ):
     (opts, args) = self.parse()
 
     width = 3
-    sig  = opts.sigma
-    wsig = width * sig
+    sig   = opts.sigma
+    amp   = opts.amp
+    wsig  = width * sig
 
     sysopts = { "verbose" : self.verbose, "debug" : self.debug }
     try:
