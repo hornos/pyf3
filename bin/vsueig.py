@@ -15,19 +15,20 @@ from pypak.Plot   import *
 
 
 ### Kernel wrapper
-def gendos( amp, sig, inp_grid, inp_comp_grid ):
-  try:
+def gendos( amp, sig, inp_grid, inp_comp_grid, python = False ):
+  if not python:
     import kernel.vsueig as kernel
     inp_grid_cont = c_cont( inp_grid )
     inp_comp_grid_cont = c_cont( inp_comp_grid )
     kernel.gendos( amp, sig, inp_grid_cont, inp_comp_grid_cont )
     return
-  except ImportError:
-    from pypak.Math   import GAUSS,DGAUSS
-
-  from time import clock
+  # end if
 
   print "Python Kernel"
+
+  from pypak.Math import GAUSS,DGAUSS
+  from time import clock
+
   i_range=len(inp_grid)
   j_range=len(inp_comp_grid[0])
 
@@ -97,6 +98,14 @@ class Program( Script ):
               dest = "out", default = "vsueig",
               help = "Output" )
 
+    self.option( "-t", "--test", action = "store_true",
+              dest = "test", default = False,
+              help = "Kernel Test" )
+
+    self.option( "-p", "--python", action = "store_true",
+              dest = "python", default = False,
+              help = "Do not use C kernel" )
+
     self.init()
   # end def __init__
 
@@ -161,8 +170,10 @@ class Program( Script ):
     # sys.exit(0)
 
     # generating DOS
-    # if there is a kernel use it
-    gendos( amp, sig, inp_grid, inp_comp_grid )
+    gendos( amp, sig, inp_grid, inp_comp_grid, opts.python )
+
+    if opts.test:
+      sys.exit(1)
 
     # output
     out_name = opts.out + "_kp_" + str(opts.kp) + "_sp_" + str(opts.sp)

@@ -52,7 +52,7 @@ void gendos(double amp, double sig, int dim1_1, int dim2_1, double *array2_1, in
   // Array interface
   int i_range = dim1_1;
   int j_range = dim2_2;
-  int i,j;
+  int i,j,threads=1;
 
   double *inp_grid = array2_1;
   double *inp_comp_grid = array2_2;
@@ -77,12 +77,13 @@ void gendos(double amp, double sig, int dim1_1, int dim2_1, double *array2_1, in
   gw = CUTOFF * sig;
 
 #ifdef _OPENMP
-  printf("OpenMP Threads: %d\n", omp_get_max_threads());
+  threads = omp_get_max_threads();
+  printf("OpenMP Threads: %d\n", threads);
 
 #pragma omp parallel private(i,j,mu,A,x,wt)
-
 {
-#pragma omp sections
+
+#pragma omp sections nowait
 {
 
 #pragma omp section
@@ -100,7 +101,7 @@ void gendos(double amp, double sig, int dim1_1, int dim2_1, double *array2_1, in
     }
   }
   wt[1] = omp_get_wtime();
-  printf("%2d/%2d Elapsed: %9.6lf s\n", omp_get_thread_num(), omp_get_num_threads(), wt[1]-wt[0]);
+  printf("%2d/%2d wtime: %9.6lf s\n", omp_get_thread_num(), threads, wt[1]-wt[0]);
 }
 
 #pragma omp section
@@ -118,12 +119,14 @@ void gendos(double amp, double sig, int dim1_1, int dim2_1, double *array2_1, in
     }
   }
   wt[1] = omp_get_wtime();
-  printf("%2d/%2d Elapsed: %9.6lf s\n", omp_get_thread_num(), omp_get_num_threads(), wt[1]-wt[0]);
+  printf("%2d/%2d wtime: %9.6lf s\n", omp_get_thread_num(), threads, wt[1]-wt[0]);
 }
 
 } // sections
 } // parallel
 // omp parallel end
+
+// serial
 #else
   for( i = 0; i < i_range; i++ ) {
     mu = cij(dim1_1,dim2_1,inp_grid,i,0);
@@ -139,5 +142,5 @@ void gendos(double amp, double sig, int dim1_1, int dim2_1, double *array2_1, in
 #endif
 
   t[1] = clock();
-  printf("Total Elapsed: %9.6lf s\n",(t[1]-t[0])/(double)CLOCKS_PER_SEC);
+  printf("       time: %9.6lf s\n",(t[1]-t[0])/((double)CLOCKS_PER_SEC*threads));
 }
