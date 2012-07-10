@@ -2,3 +2,11 @@
 pyf3_root=$(cd $(dirname "${BASH_SOURCE}");cd ..;pwd -P)
 
 PATH=${PATH}:${pyf3_root}/bin
+
+function pyf3/path() {
+  local _m=$1
+  if test "${_m}" = "" ; then
+    return 1
+  fi
+  python -c "import ${_m};print ${_m}.__path__[0]"
+}
