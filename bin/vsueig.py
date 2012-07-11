@@ -26,7 +26,8 @@ def gendos( amp, sig, inp_grid, inp_comp_grid, python = False ):
 
   print "Python Kernel"
 
-  from pypak.Math import GAUSS,DGAUSS
+  from pypak.Math import gauss,dgauss
+  # from cython.math import gauss,dgauss
   from time import clock
 
   i_range=len(inp_grid)
@@ -45,9 +46,9 @@ def gendos( amp, sig, inp_grid, inp_comp_grid, python = False ):
         continue
       # print x
       # fx
-      inp_comp_grid[1,j] += GAUSS( x, A , mu, sig )
+      inp_comp_grid[1,j] += gauss( x, A , mu, sig )
       # d/dx fx
-      inp_comp_grid[2,j] += DGAUSS( x, A, mu, sig )
+      inp_comp_grid[2,j] += dgauss( x, A, mu, sig )
     # end for
   # end for
   elapsed = (clock() - start)

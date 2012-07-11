@@ -11,6 +11,8 @@ pkg/*
 lib/kernel/vsueig.py
 lib/kernel/numpy.i
 lib/kernel/build
+lib/cython/hello.c
+lib/cython/build
 *_wrap.*
 
 

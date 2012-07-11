@@ -8,6 +8,7 @@ echo
 msg
 gui/line
 
+OMP_NUM_THREADS=${OMP_NUM_THREADS:-2}
 if test ${OMP_NUM_THREADS} -gt 2 ; then
   OMP_NUM_THREADS=2
 fi

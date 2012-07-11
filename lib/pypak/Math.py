@@ -95,7 +95,7 @@ def CUB():
   return C
 # end def
 
-def GAUSS(x, A=1.0, mu=0.0, sigma=1.0):
+def gauss(x, A=1.0, mu=0.0, sigma=1.0):
   """
   Evaluate Gaussian.
 
@@ -112,6 +112,6 @@ def GAUSS(x, A=1.0, mu=0.0, sigma=1.0):
   return np.real(A * np.exp(-(x - mu)**2 / (2 * sigma**2)))
 # end def
 
-def DGAUSS(x, A=1.0, mu=0.0, sigma=1.0):
-  return  - (x - mu) / (sigma * sigma) * GAUSS( x, A, mu, sigma ) 
+def dgauss(x, A=1.0, mu=0.0, sigma=1.0):
+  return  - (x - mu) / (sigma * sigma) * gauss( x, A, mu, sigma ) 
 # end def

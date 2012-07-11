@@ -1,0 +1,23 @@
+#!/bin/bash
+
+function help/compile() {
+  cat << EOF
+Usage: compile [build|test]
+EOF
+  exit 1
+}
+
+_c=${1:-build}
+
+case "${_c}" in
+  build)
+    python setup.py build_ext --inplace
+  ;;
+  test)
+#    python -c "import hello; hello.hello(\"test\")"
+    python -c "import math; math.gauss(0); math.dgauss(0)"
+  ;;
+  *)
+    help/compile
+  ;;
+esac
