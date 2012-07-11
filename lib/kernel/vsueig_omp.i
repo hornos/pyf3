@@ -1,8 +1,8 @@
-%module vsueig
+%module vsueig_omp
 
 %{
 #define SWIG_FILE_WITH_INIT
-#include "vsueig.h"
+#include "vsueig_omp.h"
 %}
 
 %include "numpy.i"
@@ -39,4 +39,4 @@ import_array();
 %apply_numpy_typemaps(float             )
 %apply_numpy_typemaps(double            )
 
-%include "vsueig.h"
+%include "vsueig_omp.h"

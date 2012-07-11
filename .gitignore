@@ -9,8 +9,11 @@ pkg/*
 *.so
 *.o
 lib/kernel/vsueig.py
+lib/kernel/vsueig_mpi.py
+lib/kernel/vsueig_omp.py
 lib/kernel/numpy.i
 lib/kernel/build
+lib/kernel/temp
 lib/cython/hello.c
 lib/cython/math.c
 lib/cython/build

@@ -13,14 +13,17 @@ from pypak.Types  import *
 from pypak.Util   import *
 from pypak.Plot   import *
 
+# MPI
+from mpi4py import MPI as mpi
+
 
 ### Kernel wrapper
-def gendos( amp, sig, inp_grid, inp_comp_grid, python = False ):
+def gendos( comm, amp, sig, inp_grid, inp_comp_grid, python = False ):
   if not python:
-    import kernel.vsueig_omp as kernel
+    import kernel.vsueig_mpi as kernel
     inp_grid_cont = c_cont( inp_grid )
     inp_comp_grid_cont = c_cont( inp_comp_grid )
-    kernel.gendos( amp, sig, inp_grid_cont, inp_comp_grid_cont )
+    kernel.gendos( comm, amp, sig, inp_grid_cont, inp_comp_grid_cont )
     return
   # end if
 
@@ -115,6 +118,11 @@ class Program( Script ):
   def main( self ):
     (opts, args) = self.parse()
 
+    # MPI
+    comm = mpi.COMM_WORLD
+    rank = comm.Get_rank()
+    size = comm.Get_size()
+
     width = 3
     sig   = opts.sigma
     amp   = opts.amp
@@ -128,7 +136,7 @@ class Program( Script ):
       if self.debug:
         raise
       else:
-        print "Input failed:", opts.inp
+        print "%d Input failed: %s" % ( rank, opts.inp )
         sys.exit(1)
     # end try
 
@@ -171,32 +179,31 @@ class Program( Script ):
     # sys.exit(0)
 
     # generating DOS
-    gendos( amp, sig, inp_grid, inp_comp_grid, opts.python )
-
-    if opts.test:
-      sys.exit(1)
+    gendos( comm, amp, sig, inp_grid, inp_comp_grid, opts.python )
 
     # output
-    out_name = opts.out + "_kp_" + str(opts.kp) + "_sp_" + str(opts.sp)
-    out = open( out_name , 'w')
-    out.write( "" )
+    if( rank == 0 and not opts.test ):
+      out_name = opts.out + "_kp_" + str(opts.kp) + "_sp_" + str(opts.sp)
+      out = open( out_name , 'w')
+      out.write( "" )
 
-    i_range=len(inp_grid)
-    j_range=len(inp_comp_grid[0])
+      i_range=len(inp_grid)
+      j_range=len(inp_comp_grid[0])
 
-    # create & write out dos
-    dos = np.zeros( (j_range,3) )
-    for j in range(0,j_range):
-      dos[j,0] = inp_comp_grid[0,j]
-      dos[j,1] = inp_comp_grid[1,j]
-      dos[j,2] = inp_comp_grid[2,j]
-      out.write( "%12.6f %12.6f %12.6f\n" % (dos[j,0],dos[j,1],dos[j,2]) )
-    out.close()
+      # create & write out dos
+      dos = np.zeros( (j_range,3) )
+      for j in range(0,j_range):
+        dos[j,0] = inp_comp_grid[0,j]
+        dos[j,1] = inp_comp_grid[1,j]
+        dos[j,2] = inp_comp_grid[2,j]
+        out.write( "%12.6f %12.6f %12.6f\n" % (dos[j,0],dos[j,1],dos[j,2]) )
+      out.close()
 
-    # dump dos
-    save(dos,out_name)
-    # plot
-    plot(dos)
+      # dump dos
+      save(dos,out_name)
+      # plot
+      plot(dos)
+    # end if
   # end def
 # end class
 

@@ -8,14 +8,7 @@ echo
 msg
 gui/line
 
-OMP_NUM_THREADS=${OMP_NUM_THREADS:-2}
-if test ${OMP_NUM_THREADS} -gt 2 ; then
-  OMP_NUM_THREADS=2
-fi
-OMP_PROC_BIND=true
-# GOMP_CPU_AFFINITY=0
-
 # default lib path
 sys/py/lib
 # run python
-sys/py/run $*
+sys/py/mpirun $*
