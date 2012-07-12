@@ -29,6 +29,9 @@ def gendos( comm, amp, sig, inp_grid, inp_comp_grid, python = False ):
 
   print "Python Kernel"
 
+  rank = comm.Get_rank()
+  size = comm.Get_size()
+
   from pypak.Math import gauss,dgauss
   # from cython.math import gauss,dgauss
   from time import clock
@@ -49,13 +52,20 @@ def gendos( comm, amp, sig, inp_grid, inp_comp_grid, python = False ):
         continue
       # print x
       # fx
-      inp_comp_grid[1,j] += gauss( x, A , mu, sig )
-      # d/dx fx
-      inp_comp_grid[2,j] += dgauss( x, A, mu, sig )
+      if( size == 1 ):
+        inp_comp_grid[1,j] += gauss( x, A , mu, sig )
+        inp_comp_grid[2,j] += dgauss( x, A, mu, sig )
+      else:
+        if( rank == 0 ):
+          inp_comp_grid[1,j] += gauss( x, A , mu, sig )
+        # d/dx fx
+        if( rank == 1 ):
+          inp_comp_grid[2,j] += dgauss( x, A, mu, sig )
+      # end if
     # end for
   # end for
   elapsed = (clock() - start)
-  print "Elapsed time: %9.6lf s" % elapsed
+  print "%d Elapsed time: %9.6lf s" % ( rank, elapsed )
 # end def
 
 
