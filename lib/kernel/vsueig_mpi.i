@@ -17,9 +17,6 @@ import_array();
 %apply (int DIM1, TYPE* INPLACE_ARRAY1)
       {(int dim1, TYPE* array1)};
 
-%apply (int DIM1, TYPE* INPLACE_ARRAY1)
-      {(int dim1, TYPE* array1)};
-
 %apply (int DIM1, int DIM2, TYPE* INPLACE_ARRAY2)
       {(int dim1, int dim2, TYPE* array2)};
 
