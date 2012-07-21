@@ -21,10 +21,14 @@ SWG_INC = -I$(MPI4PY_HOME)/mpi4py/include
 # Targets
 .PHONY : all
 
-all: omp mpi
+all: omp
 
 omp: $(WRP_OMP) $(SRC_OMP) $(HDR_OMP) $(KERNEL)
-	./setup_omp.py build_ext -i
+	./setup_omp_gcc.py build_ext -i
+
+# numpy edit: /opt/local/Library/Frameworks/Python.framework/Versions/Current/lib/python2.7/distutils
+omp-intel: $(WRP_OMP) $(SRC_OMP) $(HDR_OMP) $(KERNEL)
+	./setup_omp_intel.py build_ext -i -c intel
 
 mpi: $(WRP_MPI) $(SRC_MPI) $(HDR_MPI) $(KERNEL)
 	./setup_mpi.py build_ext -i

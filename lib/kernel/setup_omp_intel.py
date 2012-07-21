@@ -16,12 +16,12 @@ _vsueig_omp = Extension("_vsueig_omp",
                     "vsueig_omp.c", "kernel.c"],
                    include_dirs = [numpy_include],
                    libraries=['m'],
-                   extra_compile_args=['-fopenmp'],
-                   extra_link_args=['-fopenmp'],
+                   extra_compile_args=['-DINTEL', '-O3','-openmp'],
+                   extra_link_args=['-O3','-openmp', '-openmp-link', 'static'],
                    )
 
 setup(name        = "kernel",
-      description = "OMP C kernel functions",
+      description = "OMP C (Intel) kernel functions",
       author      = "tom.hornos",
       py_modules  = ["vsueig_omp"],
       ext_modules = [_vsueig_omp]

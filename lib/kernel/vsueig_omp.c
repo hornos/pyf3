@@ -17,7 +17,11 @@ void gendos(double amp, double sig, int dim1_1, int dim2_1, double *array2_1, in
   clock_t t;
   double wt;
 
-  printf( "OMP C kernel: %s (%s)\n", __FUNCTION__, __FILE__ );
+#ifdef INTEL
+  printf( "Intel OMP C kernel: %s (%s)\n", __FUNCTION__, __FILE__ );
+#else
+  printf( "GCC OMP C kernel: %s (%s)\n", __FUNCTION__, __FILE__ );
+#endif
   printf("%5s %8s %8s\n", "Array", "dim1", "dim2");
   printf( "%5d %8d %8d\n", 1, dim1_1, dim2_1 );
   printf( "%5d %8d %8d\n", 2, dim1_2, dim2_2 );

@@ -5,3 +5,5 @@ Install:
 2. run make:
 
 CC=gcc-version make
+CC=icc make omp
+
