@@ -114,6 +114,7 @@ class AtomPos(VecPos):
     self.rno = no
     # scc base no for match
     self.bno = no
+    self.loc = 0.000
     # valid
     self.valid = True
     # average potential

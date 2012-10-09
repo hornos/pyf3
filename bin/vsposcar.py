@@ -72,11 +72,12 @@ class Program( Script ):
           if line[0] == 'tot' or line[0] == 'band':
             continue
           # print len(line)
-          band.append(string.atoi(line[0]))
+          band.append([string.atoi(line[0]), string.atof(line[10]) ])
     except:
       raise
     else:
       print band
+      # sys.exit(1)
 
     fileio = 'POSCAR'
     if opts.cart:

@@ -99,7 +99,7 @@ class Geometry:
       sym = atom.symbol
       no  = atom.no
       vec = atom.position
-      print "%5s%5s%12.6f%12.6f%12.6f" % ( no, sym, vec[0], vec[1], vec[2] )
+      print "%5s%5s%12.6f%12.6f%12.6f %12.9f" % ( no, sym, vec[0], vec[1], vec[2], atom.loc )
     # end for
   # end def
 
@@ -145,8 +145,9 @@ class Geometry:
     geom = self.clone()
     for atom in self.atoms:
       try:
-        band[atom.no+1]
+        band[atom.no+1][0]
         atom.info()
+        atom.loc = band[atom.no+1][1]
         geom.add(atom)
       except:
         pass
