@@ -31,6 +31,11 @@ class Program( Script ):
               dest = "cart", default = False,
               help = "Cart" )
 
+    self.option( "-b", "--band",
+              action = "store", type="string",
+              dest = "band",
+              help = "Band" )
+
     self.option( "-x", "--xyz",
               action = "store_true",
               dest = "xyz", default = False,
@@ -57,6 +62,22 @@ class Program( Script ):
 
     geom = inp.geom()
 
+    try:
+      band=[]
+      with open(opts.band) as f:
+        for line in f:
+          line = line.split()
+          if len(line) == 0:
+            continue
+          if line[0] == 'tot' or line[0] == 'band':
+            continue
+          # print len(line)
+          band.append(string.atoi(line[0]))
+    except:
+      raise
+    else:
+      print band
+
     fileio = 'POSCAR'
     if opts.cart:
       opts_pt = { 'pt' : PT.Cart }
@@ -73,6 +94,9 @@ class Program( Script ):
     try:
       out = IO( opts.output, fileio, "w+", opts_sys )
       out.geom( geom )
+      if len(band) != 0:
+        out_geom = out.geom()
+        out_geom.band(band)
       out.write( opts )
     except:
       if self.debug:

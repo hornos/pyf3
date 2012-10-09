@@ -24,14 +24,14 @@ SWG_INC = -I$(MPI4PY_HOME)/mpi4py/include
 all: omp
 
 omp: $(WRP_OMP) $(SRC_OMP) $(HDR_OMP) $(KERNEL)
-	./setup_omp_gcc.py build_ext -i
+	./setup_omp_gcc.py build_ext --inplace
 
 # numpy edit: /opt/local/Library/Frameworks/Python.framework/Versions/Current/lib/python2.7/distutils
 omp-intel: $(WRP_OMP) $(SRC_OMP) $(HDR_OMP) $(KERNEL)
-	./setup_omp_intel.py build_ext -i -c intel
+	./setup_omp_intel.py build_ext --inplace -c intel
 
 mpi: $(WRP_MPI) $(SRC_MPI) $(HDR_MPI) $(KERNEL)
-	./setup_mpi.py build_ext -i
+	./setup_mpi.py build_ext --inplace
 
 # Rule: %.i -> %_wrap.cxx
 %_wrap.c: %.i %.h numpy.i

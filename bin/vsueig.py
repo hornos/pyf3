@@ -33,6 +33,8 @@ def gendos( amp, sig, inp_grid, inp_comp_grid, python = False ):
   i_range=len(inp_grid)
   j_range=len(inp_comp_grid[0])
 
+  print i_range, j_range
+
   start = clock()
   # inp_grid 2d float
   # inp_comp_grid 2 float

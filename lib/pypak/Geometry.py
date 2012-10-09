@@ -85,7 +85,6 @@ class Geometry:
   def info( self, header = False ):
     lv = self.lat_vec
     print "%20s%s" % ( "Name:", ' '+self.name )
-    print "%20s%f" % ( "Scale:", self.lat_c )
     for i in range( 0, 3 ):
       print "%20s %9.6f %9.6f %9.6f" %( "a"+str(i+1)+":",lv[i][0], lv[i][1], lv[i][2] )
     # end for
@@ -142,6 +141,25 @@ class Geometry:
     return self.atoms[i-1]
   # end def
 
+  def band(self,band):
+    geom = self.clone()
+    for atom in self.atoms:
+      try:
+        band[atom.no+1]
+        atom.info()
+        geom.add(atom)
+      except:
+        pass
+    # end for
+    geom.gen_species()
+    geom.info()
+#    band.reverse()
+#    print band
+#    for b in band:
+#      self.rem(self.get(b,False))
+#    self.gen_species()
+  # end def
+
   def order( self ):
     ordered = []
     for sym in self.species:
@@ -156,6 +174,7 @@ class Geometry:
   def reciprocal( self ):
     self.rec_vec = numpy.linalg.inv( self.lat_vec )
   # end def
+
 
   def position_direct( self, r = numpy.zeros( 3 ) ):
     self.reciprocal()
@@ -558,59 +577,7 @@ class Geometry:
     # print self.geom_match
   # end def
 
-  def shift_origo( self, origo ):
-    one  = 1.000000000
-    zero = 0.000000000
-    (osy,ono) = origo.split(":")
-    ono = int(ono)
-    origo = self.get(ono)
-    if osy != origo.symbol:
-      print ' Warning: origo mismatch', osy, origo.symbol
-    # end if
-
-    opos = origo.position
-    print " shift origo"
-    origo.info()
-    for atom in self.atoms:
-      apos = atom.position
-
-      tmp = rcnorm( apos - opos )
-      atom.tmp = tmp
-
-    # end for
-  # end def
-
-  def cart_select( self, rho ):
-    crop = self.clone()
-
-    X = CUB()
-    half = 0.51000000000
-    # slow
-    for i in range(0,8):
-      RO = self.position_cart( X[i] )
-
-      # fast
-      for atom in self.atoms:
-        atmp = atom.tmp
-        r = self.position_cart( atmp )
-        dr = r - RO
-        dx = atmp - X[i]
-        if l2norm( dr) >= rho:
-          if rvnorm( dx, half ):
-            if atom.valid:
-              atom.dist = l2norm(dr)
-              print "SELECT %4d %2s %12.9f" % (atom.no,atom.symbol,atom.dist), dx
-              crop.add( atom, True )
-              atom.valid = False
-          # end if
-        # end if
-
-      # end for
-    # end for
-
-    crop.normalize()
-    return crop
-  # end def
+  ### Parallel
 
   ### Transformations
 
